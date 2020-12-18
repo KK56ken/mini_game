@@ -1,4 +1,6 @@
+from hello2 import good
 from flask import Flask, render_template
+
 app = Flask(__name__)
 
 
@@ -10,8 +12,8 @@ def hello():
 
 
 @app.route("/good")
-def good():
-    name = "good"
+def hello2():
+    name = good()
     return render_template('test2.html', title='flask test', name=name)
 
 
