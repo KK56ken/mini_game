@@ -1,11 +1,14 @@
-#!/usr/bin/env python
-# -*- coding: utf8 -*-
-import sys
-import tkinter as tk
+# -*- coding:utf-8 -*-
+import tkinter
+from tkinter import messagebox
+import random
 
-BOARD_WIDTH = 5
-BOARD_HEIGHT = 5
-MINE_NUM = 2
+
+# 各種設定
+BOARD_WIDTH = 20
+BOARD_HEIGHT = 10
+MINE_NUM = 20
+
 MINE_BG_COLOR = "pink"
 FLAG_BG_COLOR = "gold"
 EMPTY_BG_COLOR = "lightgray"
@@ -21,11 +24,15 @@ fg_color = {
     8: "red",
 }
 
+# 定数定義
 MINE = -1
 
 
 class MineSweeper():
     def __init__(self, app):
+
+        # *** 各種メンバの初期化 *** #
+
         self.app = app
         self.cells = None
         self.labels = None
@@ -37,7 +44,24 @@ class MineSweeper():
         self.open_mine = False
         self.play_game = False
 
+        # 地雷を管理するボード
+        self.cells = None
+
+        # 画面に表示するラベルウィジェットの管理リスト
+        self.labels = None
+
+        # *** 爆弾を管理するボード作成 *** #
+
+        # ボードを初期化
         self.init_cells()
+
+        # ボードに地雷を配置
+        self.place_mines()
+
+        # 各マスに周りの地雷の数を設定
+        self.set_mine_num()
+
+        # *** ウィジェットの表示とイベント設定 *** #
 
         # ウィジェットの作成と配置
         self.create_widgets()
@@ -48,68 +72,124 @@ class MineSweeper():
         # 最後にゲーム中フラグをTrueに設定
         self.play_game = True
 
-     # ボードの初期化
+
+    # ボードの初期化
     def init_cells(self):
+
         # ボードのサイズ分の２次元リストを作成
         self.cells = [[0] * self.width for _ in range(self.height)]
 
-    def create_widgets(self):
-        self.labels = [[None] * self.width for j in range(self.height)]
-        for i in range(self.height):
-            for j in range(self.width):
-                label = tk.Label(width=2, height=1, relief=tk.RAISED)
-                label.grid(column=i, row=j)
+    # 地雷を配置
+    def place_mines(self):
 
-                self.labels[i][j] = label
+        mine_num = 0
+        while mine_num < self.mine_num:
 
-    def set_events(self):
+            # 地雷の位置をランダムに決定
+            j = random.randint(0, self.height - 1)
+            i = random.randint(0, self.width - 1)
+
+            if self.cells[j][i] != MINE:
+
+                # その位置に地雷があることを示すMINE(-1)を格納
+                self.cells[j][i] = MINE
+                mine_num += 1
+
+    # 各マスに周りの地雷の数を設定
+    def set_mine_num(self):
         for j in range(self.height):
             for i in range(self.width):
+
+                # そのマスが地雷の場合は何もしない
+                if self.cells[j][i] == MINE:
+                    continue
+
+                # 隣接する８方向のマスの地雷の数をカウント
+                num_mine = 0
+
+                # 方向を決める２重ループ
+                for y in range(-1, 2):
+                    for x in range(-1, 2):
+                        if y != 0 or x != 0:
+                            # その方向に地雷があるかチェック
+                            is_mine = self.is_mine(i + x, j + y)
+
+                            if is_mine:
+                                # 地雷があればカウントアップ
+                                num_mine += 1
+
+                # 周りの地雷の数をセット
+                self.cells[j][i] = num_mine
+
+    # そのマスに地雷があるかどうかを判断する関数
+    def is_mine(self, i, j):
+
+        # ボード内の座標かチェック
+        if j >= 0 and i >= 0 and j < self.height and i < self.width:
+
+            # その座標に地雷があるかどうかをチェック
+            if self.cells[j][i] == MINE:
+
+                # そのマスが地雷の場合はTrueを返却
+                return True
+
+        # ボード外 or 地雷でない場合はFalseを返却
+        return False
+
+    # ウィジェットを作成
+    def create_widgets(self):
+        # ラベルウィジェット管理用のリストを作成
+        self.labels = [[None] * self.width for j in range(self.height)]
+
+        for j in range(self.height):
+            for i in range(self.width):
+
+                # まずはテキストなしでラベルを作成
+                label = tkinter.Label(
+                    self.app,
+                    width=2,
+                    height=1,
+                    bg=EMPTY_BG_COLOR,
+                    relief=tkinter.RAISED
+                )
+                # ラベルを配置
+                label.grid(column=i, row=j)
+
+                # その座標のラベルのインスタンスを覚えておく
+                self.labels[j][i] = label
+
+    # イベントを設定
+    def set_events(self):
+
+        # 全ラベルに対してイベントを設定
+        for j in range(self.height):
+            for i in range(self.width):
+
                 label = self.labels[j][i]
 
+                # 左クリック時のイベント設定
                 label.bind("<ButtonPress-1>", self.open_cell)
 
+                # 右クリック時のイベント設定
                 label.bind("<ButtonPress-2>", self.raise_flag)
 
-    def open_cell(self, event):
-        # ゲーム中でなければ何もしない
-        if not self.play_game:
-            return
-        label = event.widget
-
-        for y in range(self.height):
-            for x in range(self.width):
-                if self.labels[y][x] == label:
-                    j = y
-                    i = x
-        cell = self.cells[j][i]
-
-        if label.cget("relief") != tk.RAISED:
-            return
-        text, bg, fg = self.get_text_info(cell)
-
-        # そこに地雷がある場合
-        if cell == MINE:
-            # ゲームオーバーフラグをTrueに設定
-            self.open_mine = True
-
-        # ラベルの設定変更
-        label.config(
-            text=text,
-            bg=bg,
-            fg=fg,
-            relief=tk.SUNKEN
-        )
-
+    # 右クリック時に実行する関数
     def raise_flag(self, event):
+
         # ゲーム中でなければ何もしない
         if not self.play_game:
             return
+
+        # クリックされたラベルを取得
         label = event.widget
-        if label.cget("relief") != tk.RAISED:
+
+        # 既にそのマスを開いている場合は何もしない
+        if label.cget("relief") != tkinter.RAISED:
             return
 
+        # 既に旗が設定されている場合
         if label.cget("text") != "F":
+
             # ラベルの色を設定
             bg = FLAG_BG_COLOR
 
@@ -126,8 +206,168 @@ class MineSweeper():
             label.config(
                 text="",
                 bg=bg
-
             )
+
+    # 左クリック時に実行する関数
+    def open_cell(self, event):
+
+        # ゲーム中でなければ何もしない
+        if not self.play_game:
+            return
+
+        # クリックされたラベルを取得
+        label = event.widget
+
+        # ラベルの座標を取得
+        for y in range(self.height):
+            for x in range(self.width):
+                if self.labels[y][x] == label:
+                    j = y
+                    i = x
+
+        cell = self.cells[j][i]
+
+        # 既にそのマスを開いている場合は何もしない
+        if label.cget("relief") != tkinter.RAISED:
+            return
+
+        # マスの状態に応じて表示するテキストと色を設定
+        text, bg, fg = self.get_text_info(cell)
+
+        # そこに地雷がある場合
+        if cell == MINE:
+
+            # ゲームオーバーフラグをTrueに設定
+            self.open_mine = True
+
+        # ラベルの設定変更
+        label.config(
+            text=text,
+            bg=bg,
+            fg=fg,
+            relief=tkinter.SUNKEN
+        )
+
+        # 開いたマス数をカウントアップ
+        self.open_num += 1
+
+        # 周辺の座標も開けるかどうかを調べていく
+        if cell == 0:
+            self.open_neighbor(i - 1, j - 1)
+            self.open_neighbor(i, j - 1)
+            self.open_neighbor(i + 1, j - 1)
+            self.open_neighbor(i - 1, j)
+            self.open_neighbor(i + 1, j)
+            self.open_neighbor(i - 1, j + 1)
+            self.open_neighbor(i, j + 1)
+            self.open_neighbor(i + 1, j + 1)
+
+
+        # ゲームオーバーならゲームオーバー処理
+        if self.open_mine:
+            self.app.after_idle(self.game_over)
+
+        # ゲームクリアならゲームクリア処理
+        elif self.open_num == self.clear_num:
+            self.app.after_idle(self.game_clear)
+
+    # クリックされたマスをの周辺を開く処理
+    def open_neighbor(self, i, j):
+
+        # 地雷を開けてしまっていたら何もしない
+        if self.open_mine:
+            return
+
+        # ボード外の座標であれば何もしない
+        if not (j >= 0 and i >= 0 and j < self.height and i < self.width):
+            return
+
+        # その座標のラベルを取得
+        label = self.labels[j][i]
+
+        # 既にそのマスを開いている場合は何もしない
+        if label.cget("relief") != tkinter.RAISED:
+            return
+
+        # そのマスが地雷であれば何もしない
+        if self.cells[j][i] == MINE:
+            return
+
+        # ↑ の条件に当てはまらないのであればそのマスは開ける
+
+        # ラベルの座標に応じて表示するテキストと色を設定
+        text, bg, fg = self.get_text_info(self.cells[j][i])
+
+        # ラベルの設定変更
+        label.config(
+            text=text,
+            bg=bg,
+            fg=fg,
+            relief=tkinter.SUNKEN
+        )
+
+        # 開いたマス数をカウントアップ
+        self.open_num += 1
+
+        # 周辺の座標も開けるかどうかを調べていく
+        if self.cells[j][i] == 0:
+            self.open_neighbor(i - 1, j - 1)
+            self.open_neighbor(i, j - 1)
+            self.open_neighbor(i + 1, j - 1)
+            self.open_neighbor(i - 1, j)
+            self.open_neighbor(i + 1, j)
+            self.open_neighbor(i - 1, j + 1)
+            self.open_neighbor(i, j + 1)
+            self.open_neighbor(i + 1, j + 1)
+
+    # ゲームオーバー時の処理
+    def game_over(self):
+
+        # 全マスを開く
+        self.open_all()
+
+        # ゲーム中フラグをFalseに設定
+        self.play_game = False
+
+        # メッセージを表示
+        messagebox.showerror(
+            "ゲームオーバー",
+            "地雷を開いてしまいました..."
+        )
+
+    # ゲームクリア時の処理
+    def game_clear(self):
+
+        # 全マスを開く
+        self.open_all()
+
+        # ゲーム中フラグをFalseに設定
+        self.play_game = False
+
+        # メッセージを表示
+        messagebox.showinfo(
+            "ゲームクリア",
+            "おめでとうございます！ゲームクリア！"
+        )
+
+    # マスを全て開く
+    def open_all(self):
+
+        # 全マスに対するループ
+        for j in range(self.height):
+            for i in range(self.width):
+                label = self.labels[j][i]
+
+                # ラベルの座標に応じて表示するテキストと色を設定
+                text, bg, fg = self.get_text_info(self.cells[j][i])
+
+                # ラベルの設定変更
+                label.config(
+                    text=text,
+                    bg=bg,
+                    fg=fg,
+                    relief=tkinter.SUNKEN
+                )
 
     # テキストと文字と背景色を取得する関数
     def get_text_info(self, num):
@@ -149,8 +389,7 @@ class MineSweeper():
         return (text, bg, fg)
 
 
-app = tk.Tk()
-app.title("Minesweeper")
-
+# プログラムの開始
+app = tkinter.Tk()
 game = MineSweeper(app)
 app.mainloop()
