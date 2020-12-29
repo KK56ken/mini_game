@@ -10,15 +10,27 @@ WIDTH = 8
 FIRST = 0
 SECOND = 1
 
+CPU = 0
+USER = 1
+
 
 class Chess():
+    # コンストラクタ
     def __init__(self, app):
         self.app = app
+
         self.cells = None
+
         self.height = HEIGHT
         self.width = WIDTH
 
-        self.turn = FIRST
+        self.player = None
+
+        self.user_name = None
+        self.cpu_name = None
+
+        self.turn = None
+        self.now_turn = FIRST
 
         self.init_cells()
 
@@ -28,37 +40,68 @@ class Chess():
         # cellsの中身の確認
         self.test_cells()
 
-    #　cellsの初期化
+    # cellsの初期化
     def init_cells(self):
-        self.cells = [["" for i in range(self.height)]
-                      for j in range(self.width)]
+        self.cells = [["" for i in range(self.width)]
+                      for j in range(self.height)]
 
-    #　キャラクターの配置
+    # 先行後攻選択
+    def select_turn(self):
+        # 先行を押した時の処理
+        if self.turn == FIRST:
+            self.player = CPU
+        # 後攻を押した時の処理
+        elif self.turn == SECOND:
+            self.player = USER
+
+    # キャラクターの配置
+
     def placement_chara(self):
-        for i in range(self.height):
-            for j in range(self.width):
-                if (i == 1 or i == 6):
-                    self.cells[i][j] = "PAWN"
-                elif (i == 0 and j == 0) or (i == 0 and j == 7) or (i == 7 and j == 0) or (i == 7 and j == 7):
-                    self.cells[i][j] = "ROOK"
-                elif (i == 0 and j == 1) or (i == 0 and j == 6) or (i == 7 and j == 1) or (i == 7 and j == 6):
-                    self.cells[i][j] = "KNIGHT"
-                elif (i == 0 and j == 2) or (i == 0 and j == 5) or (i == 7 and j == 2) or (i == 7 and j == 5):
-                    self.cells[i][j] = "BISHOP"
-                elif (i == 0 and j == 3) or (i == 7 and j == 3):
-                    self.cells[i][j] = "KING"
-                elif (i == 0 and j == 4) or (i == 7 and j == 4):
-                    self.cells[i][j] = "QUEEN"
+        for i in range(self.width):
+            for j in range(self.height):
+                # CPUのコマ配置
+                if (i == 1):
+                    self.cells[i][j] = "CPU_PAWN"
+                elif (i == 7 and j == 0) or (i == 7 and j == 7):
+                    self.cells[i][j] = "CPU_ROOK"
+                elif (i == 7 and j == 1) or (i == 7 and j == 6):
+                    self.cells[i][j] = "CPU_KNIGHT"
+                elif (i == 7 and j == 2) or (i == 7 and j == 5):
+                    self.cells[i][j] = "CPU_BISHOP"
+                elif (i == 7 and j == 3):
+                    self.cells[i][j] = "CPU_KING"
+                elif (i == 7 and j == 4):
+                    self.cells[i][j] = "CPU_QUEEN"
+                # USERのコマ配置
+                if (i == 6):
+                    self.cells[i][j] = "USER_PAWN"
+                elif (i == 0 and j == 0) or (i == 0 and j == 7):
+                    self.cells[i][j] = "USER_ROOK"
+                elif (i == 0 and j == 1) or (i == 0 and j == 6):
+                    self.cells[i][j] = "USER_KNIGHT"
+                elif (i == 0 and j == 2) or (i == 0 and j == 5):
+                    self.cells[i][j] = "USER_BISHOP"
+                elif (i == 0 and j == 3):
+                    self.cells[i][j] = "USER_KING"
+                elif (i == 0 and j == 4):
+                    self.cells[i][j] = "USER_QUEEN"
 
     #　動けるか確認する関数
     # i,jが古い座標、x、yが新しい座標（動きたい座標）
-    def is_move(self, name, i, j, y, x):
-        if name == "PAWN":
-            if j >= 0 and i >= 0 and j < self.height and i < self.width:
-                if self.cells[y][x] == "":
+    def is_move(self, i, j, y, x):
+        if y >= 0 and x >= 0 and y < self.height and x < self.width:
+            if self.player == CPU:
+                if self.cells[y][x] == "" or self.cells[y][x] == "USER_PAWN":
                     self.pown_move(i, j, y, x)
                 else:
-                    self.not_move_alert()
+                    self.cant_move_alert()
+            elif self.player == USER:
+                if self.cells[y][x] == "" or self.cells[y][x] == "CPU_PAWN":
+                    self.pown_move(i, j, y, x)
+                else:
+                    self.cant_move_alert()
+        else:
+            self.cant_move_alert()
 
     # ポーンの動き
     def pown_move(self, i, j, y, x):
@@ -70,7 +113,7 @@ class Chess():
     #
 
     #
-    def not_move_alert(self):
+    def cant_move_alert(self):
         messagebox.showinfo(
             "そこに動くことはできません。"
         )
@@ -82,8 +125,8 @@ class Chess():
     ##################
     # cellsの中身を確認する
     def test_cells(self):
-        for i in range(self.height):
-            for j in range(self.width):
+        for i in range(self.width):
+            for j in range(self.height):
                 print(self.cells[i][j], end=' ')
                 print()
 
