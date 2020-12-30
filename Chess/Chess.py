@@ -33,9 +33,14 @@ class Chess():
         self.turn = None
         self.now_turn = FIRST
 
+        self.labels = None
+
         self.init_cells()
 
         self.placement_piece()
+
+        # ↓GUIの作成
+        self.create_widgets()
 
         # debug呼び出し
         # cellsの中身の確認
@@ -111,6 +116,7 @@ class Chess():
             "player": "USER",
             "chess_piece": "QUEEN"
         }
+
         for i in range(self.height):
             for j in range(self.height):
                 # CPUのコマ配置
@@ -233,7 +239,6 @@ class Chess():
                     else:
                         continue
 
-
     def pown_move(self, cell, y, x):
         if self.player == CPU:
             if self.cells[y][x] == "" or self.cells[y][x] == "USER_PAWN":
@@ -318,12 +323,36 @@ class Chess():
             "そこに動くことはできません。"
         )
 
+    # ウィジェットを作成
+
+    def create_widgets(self):
+        # ラベルウィジェット管理用のリストを作成
+        self.labels = [[None] * self.width for j in range(self.height)]
+
+        for j in range(self.height):
+            for i in range(self.width):
+
+                # まずはテキストなしでラベルを作成
+                label = tk.Label(
+                    self.app,
+                    width=10,
+                    height=6,
+                    bg="lightgray",
+                    relief=tk.RAISED
+                )
+                # ラベルを配置
+                label.grid(column=i, row=j)
+
+                # その座標のラベルのインスタンスを覚えておく
+                self.labels[j][i] = label
+
     ################################################################################
 
     ###################
     ## debug_methods ##
     ##################
     # cellsの中身を確認する
+
     def test_cells(self):
         for i in range(self.width):
             for j in range(self.height):
