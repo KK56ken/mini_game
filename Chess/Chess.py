@@ -116,51 +116,68 @@ class Chess():
                 # CPUのコマ配置
                 if (i == 1):
                     self.cells[i][j] = cpu_pawn_dict.copy()
-                elif (i == 7 and j == 0) or (i == 7 and j == 7):
+                elif (i == 0 and j == 0) or (i == 0 and j == 7):
                     self.cells[i][j] = cpu_rook_dict.copy()
-                elif (i == 7 and j == 1) or (i == 7 and j == 6):
+                elif (i == 0 and j == 1) or (i == 0 and j == 6):
                     self.cells[i][j] = cpu_knight_dict.copy()
-                elif (i == 7 and j == 2) or (i == 7 and j == 5):
+                elif (i == 0 and j == 2) or (i == 0 and j == 5):
                     self.cells[i][j] = cpu_bishop_dict.copy()
-                elif (i == 7 and j == 3):
+                elif (i == 0 and j == 3):
                     self.cells[i][j] = cpu_king_dict.copy()
-                elif (i == 7 and j == 4):
+                elif (i == 0 and j == 4):
                     self.cells[i][j] = cpu_queen_dict.copy()
                 # USERのコマ配置
                 if (i == 6):
                     self.cells[i][j] = user_pawn_dict.copy()
-                elif (i == 0 and j == 0) or (i == 0 and j == 7):
+                elif (i == 7 and j == 0) or (i == 7 and j == 7):
                     self.cells[i][j] = user_rook_dict.copy()
-                elif (i == 0 and j == 1) or (i == 0 and j == 6):
+                elif (i == 7 and j == 1) or (i == 7 and j == 6):
                     self.cells[i][j] = user_knight_dict.copy()
-                elif (i == 0 and j == 2) or (i == 0 and j == 5):
+                elif (i == 7 and j == 2) or (i == 7 and j == 5):
                     self.cells[i][j] = user_bishop_dict.copy()
-                elif (i == 0 and j == 3):
+                elif (i == 7 and j == 3):
                     self.cells[i][j] = user_king_dict.copy()
-                elif (i == 0 and j == 4):
+                elif (i == 7 and j == 4):
                     self.cells[i][j] = user_queen_dict.copy()
 
     def is_move(self, name, y, x):
-
+        self.init_move_cells()
         if name == "PAWN":
             if self.cells[y][x] == "CPU_PAWN":
                 if (y + 1) >= 0 and (y + 1) < self.height:
                     # 今の状態だと移動先に何があっても移動できる
                     self.move_cells[y + 1][x] = True
-                else:
-                    self.cant_move_alert()
 
             elif self.cells[y][x] == "USER_PAWN":
                 if (y - 1) >= 0 and (y - 1) < self.height:
                     self.move_cells[y - 1][x] = True
-                else:
-                    self.cant_move_alert()
-        elif name == "ROOK":
-            for i in range(2):
-                for j in range(8):
-                    if y >= 0 and x >= 0 and y < self.height and x < self.width:
-                        self.cells[y-j][x]
 
+        elif name == "ROOK":
+            for i in range(4):
+                for j in range(8):
+                    if i == 0 and (y-j) >= 0 and (y-j) < self.height:
+                        self.move_cells[y - j][x] = True
+                    elif i == 1 and (y+j) >= 0 and (y+j) < self.height:
+                        self.move_cells[y + j][x] = True
+                    elif i == 2 and (x-j) >= 0 and (x-j) < self.height:
+                        self.move_cells[y][x - j] = True
+                    elif i == 3 and (x+j) >= 0 and (x+j) < self.height:
+                        self.move_cells[y][x - j] = True
+                    else:
+                        continue
+
+        elif name == "KNIGHT":
+            for i in range(4):
+                for j in range(8):
+                    if i == 0 and (y-j) >= 0 and (y-j) < self.height:
+                        self.move_cells[y - j][x] = True
+                    elif i == 1 and (y+j) >= 0 and (y+j) < self.height:
+                        self.move_cells[y + j][x] = True
+                    elif i == 2 and (x-j) >= 0 and (x-j) < self.height:
+                        self.move_cells[y][x - j] = True
+                    elif i == 3 and (x+j) >= 0 and (x+j) < self.height:
+                        self.move_cells[y][x - j] = True
+                        
                     #　pawnが動けるか確認する関数
                     # i,jが古い座標、x、yが新しい座標（動きたい座標）
 
@@ -325,7 +342,7 @@ class Chess():
         for i in range(self.width):
             for j in range(self.height):
                 if any(self.cells[i][j]):
-                    print(self.cells[i][j]["chess_piece"], end=' ')
+                    print(self.cells[i][j]["player"], end=' ')
                 else:
                     print("NONE", end=' ')
             print()
