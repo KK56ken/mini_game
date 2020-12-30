@@ -167,17 +167,32 @@ class Chess():
                         continue
 
         elif name == "KNIGHT":
-            for i in range(4):
-                for j in range(8):
-                    if i == 0 and (y-j) >= 0 and (y-j) < self.height:
-                        self.move_cells[y - j][x] = True
-                    elif i == 1 and (y+j) >= 0 and (y+j) < self.height:
-                        self.move_cells[y + j][x] = True
-                    elif i == 2 and (x-j) >= 0 and (x-j) < self.height:
-                        self.move_cells[y][x - j] = True
-                    elif i == 3 and (x+j) >= 0 and (x+j) < self.height:
-                        self.move_cells[y][x - j] = True
-                        
+            if y - 2 >= 0 and x - 1 >= 0 and y - 2 < self.height and x - 1 < self.width:
+                self.move_cells[y - 2][x - 1] = True
+
+            if y - 1 >= 0 and x - 2 >= 0 and y - 1 < self.height and x - 2 < self.width:
+                self.move_cells[y - 1][x - 2] = True
+
+            if y - 2 >= 0 and x + 1 >= 0 and y - 2 < self.height and x + 1 < self.width:
+                self.move_cells[y - 2][x + 1] = True
+
+            if y - 1 >= 0 and x + 2 >= 0 and y - 1 < self.height and x + 2 < self.width:
+                self.move_cells[y - 1][x + 2] = True
+
+            if y + 1 >= 0 and x - 2 >= 0 and y + 1 < self.height and x - 2 < self.width:
+                self.move_cells[y + 1][x - 2] = True
+
+            if y + 2 >= 0 and x - 1 >= 0 and y + 2 < self.height and x - 1 < self.width:
+                self.move_cells[y + 2][x - 1] = True
+
+            if y + 1 >= 0 and x + 2 >= 0 and y + 1 < self.height and x + 2 < self.width:
+                self.move_cells[y + 1][x + 2] = True
+
+            if y + 2 >= 0 and x + 1 >= 0 and y + 2 < self.height and x + 1 < self.width:
+                self.move_cells[y + 2][x + 1] = True
+
+
+
                     #　pawnが動けるか確認する関数
                     # i,jが古い座標、x、yが新しい座標（動きたい座標）
 
