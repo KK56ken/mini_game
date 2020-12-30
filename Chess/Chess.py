@@ -191,7 +191,25 @@ class Chess():
             if y + 2 >= 0 and x + 1 >= 0 and y + 2 < self.height and x + 1 < self.width:
                 self.move_cells[y + 2][x + 1] = True
 
-
+        elif name == "BISHOP":
+            for i in range(4):
+                for j in range(8):
+                    if i == 0 and y-j >= 0 and x-j >= 0 and y-j < self.height and x-j < self.width:
+                        self.move_cells[y - j][x - j] = True
+                    elif i == 1 and y-j >= 0 and x+j >= 0 and y-j < self.height and x+j < self.width:
+                        self.move_cells[y - j][x + j] = True
+                    elif i == 2 and y+j >= 0 and x-j >= 0 and y+j < self.height and x-j < self.width:
+                        self.move_cells[y + j][x - j] = True
+                    elif i == 3 and y+j >= 0 and x+j >= 0 and y+j < self.height and x+j < self.width:
+                        self.move_cells[y + j][x + j] = True
+                    else:
+                        continue
+                    
+        elif name == "KING":
+            for i in range(-1, 2):
+                for j in range(-1, 2):
+                    if y+i >= 0 and x+j >= 0 and y+i < self.height and x+j < self.width and not(i == 0 and j == 0):
+                        self.move_cells[y+i][x+j] = True
 
                     #　pawnが動けるか確認する関数
                     # i,jが古い座標、x、yが新しい座標（動きたい座標）
