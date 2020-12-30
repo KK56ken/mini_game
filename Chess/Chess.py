@@ -204,82 +204,35 @@ class Chess():
                         self.move_cells[y + j][x + j] = True
                     else:
                         continue
-                    
+
         elif name == "KING":
             for i in range(-1, 2):
                 for j in range(-1, 2):
                     if y+i >= 0 and x+j >= 0 and y+i < self.height and x+j < self.width and not(i == 0 and j == 0):
                         self.move_cells[y+i][x+j] = True
 
-                    #　pawnが動けるか確認する関数
-                    # i,jが古い座標、x、yが新しい座標（動きたい座標）
+        elif name == "QUEEN":
+            for i in range(8):
+                for j in range(8):
+                    if i == 0 and y-j >= 0 and x-j >= 0 and y-j < self.height and x-j < self.width:
+                        self.move_cells[y - j][x - j] = True
+                    elif i == 1 and y-j >= 0 and x+j >= 0 and y-j < self.height and x+j < self.width:
+                        self.move_cells[y - j][x + j] = True
+                    elif i == 2 and y+j >= 0 and x-j >= 0 and y+j < self.height and x-j < self.width:
+                        self.move_cells[y + j][x - j] = True
+                    elif i == 3 and y+j >= 0 and x+j >= 0 and y+j < self.height and x+j < self.width:
+                        self.move_cells[y + j][x + j] = True
+                    elif i == 4 and (y-j) >= 0 and (y-j) < self.height:
+                        self.move_cells[y - j][x] = True
+                    elif i == 5 and (y+j) >= 0 and (y+j) < self.height:
+                        self.move_cells[y + j][x] = True
+                    elif i == 6 and (x-j) >= 0 and (x-j) < self.width:
+                        self.move_cells[y][x - j] = True
+                    elif i == 7 and (x+j) >= 0 and (x+j) < self.width:
+                        self.move_cells[y][x - j] = True
+                    else:
+                        continue
 
-                    # def is_move(self, name, i, j, y, x):
-                    #     if name == "PAWN":
-                    #         if y >= 0 and x >= 0 and y < self.height and x < self.width:
-                    #             if y == (j + 1) and x == i:
-                    #                 self.pown_move(self.cells[i][j], y, x)
-                    #                 self.cells[i][j] = ""
-                    #             else:
-                    #                 self.cant_move_alert()
-                    #         else:
-                    #             self.cant_move_alert()
-                    #     elif name == "ROOK":
-                    #         if y >= 0 and x >= 0 and y < self.height and x < self.width:
-                    #             if y == j or x == i:
-                    #                 self.rook_move(self.cells[i][j], y, x)
-                    #                 self.cells[i][j] = ""
-                    #             else:
-                    #                 self.cant_move_alert()
-                    #         else:
-                    #             self.cant_move_alert()
-
-                    #     elif name == "KNIGHT":
-                    #         if y >= 0 and x >= 0 and y < self.height and x < self.width:
-                    #             if y == j or x == i:
-                    #                 self.knight_move(self.cells[i][j], y, x)
-                    #                 self.cells[i][j] = ""
-                    #             else:
-                    #                 self.cant_move_alert()
-                    #         else:
-                    #             self.cant_move_alert()
-
-                    #     elif name == "BISHOP":
-                    #         if y >= 0 and x >= 0 and y < self.height and x < self.width:
-                    #             for k in range(4):
-                    #                 for l in range(8):
-                    #                     if i+l j+ls
-                    #                     '
-
-                    #                     if y == j or x == i:
-                    #                         self.bishop_move(self.cells[i][j], y, x)
-                    #                         self.cells[i][j] = ""
-                    #                     else:
-                    #                         self.cant_move_alert()
-                    #         else:
-                    #             self.cant_move_alert()
-
-                    #     elif name == "KING":
-                    #         if y >= 0 and x >= 0 and y < self.height and x < self.width:
-                    #             if y == j or x == i:
-                    #                 self.king_move(self.cells[i][j], y, x)
-                    #                 self.cells[i][j] = ""
-                    #             else:
-                    #                 self.cant_move_alert()
-                    #         else:
-                    #             self.cant_move_alert()
-
-                    #     elif name == "QUEEN":
-                    #         if y >= 0 and x >= 0 and y < self.height and x < self.width:
-                    #             if y == j or x == i:
-                    #                 self.queen_move(self.cells[i][j], y, x)
-                    #                 self.cells[i][j] = ""
-                    #             else:
-                    #                 self.cant_move_alert()
-                    #         else:
-                    #             self.cant_move_alert()
-
-                    # ポーンの動き
 
     def pown_move(self, cell, y, x):
         if self.player == CPU:
