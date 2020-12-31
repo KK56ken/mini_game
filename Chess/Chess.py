@@ -324,6 +324,152 @@ class Chess():
                 label.config(
                     text="PAWN"
                 )
+        elif name == "ROOK":
+            print("1")
+            if self.cells[self.save_cell["x"]][self.save_cell["y"]]["player"] == "CPU":
+                print("2")
+                # if not any(self.cells[y][x]) or self.cells[x][y]["player"] == "USER":
+                self.cells[self.save_cell["x"]
+                           ][self.save_cell["y"]]["chess_piece"] = "NONE"
+                self.cells[x][y]["player"] = "CPU"
+                self.cells[x][y]["chess_piece"] = "ROOK"
+                self.labels[self.save_cell["x"]][self.save_cell["y"]].config(
+                    text=""
+                )
+                label.config(
+                    text="ROOK"
+                )
+
+            elif self.cells[self.save_cell["x"]][self.save_cell["y"]]["player"] == "USER":
+                print("3")
+                # if not any(self.cells[y][x]) or self.cells[y][x]["player"] == "CPU":
+                self.cells[self.save_cell["x"]
+                           ][self.save_cell["y"]]["chess_piece"] = "NONE"
+                self.cells[x][y]["player"] = "USER"
+                self.cells[x][y]["chess_piece"] = "ROOK"
+                self.labels[self.save_cell["x"]][self.save_cell["y"]].config(
+                    text=""
+                )
+                label.config(
+                    text="ROOK"
+                )
+        elif name == "KNIGHT":
+            print("1")
+            if self.cells[self.save_cell["x"]][self.save_cell["y"]]["player"] == "CPU":
+                print("2")
+                # if not any(self.cells[y][x]) or self.cells[x][y]["player"] == "USER":
+                self.cells[self.save_cell["x"]
+                           ][self.save_cell["y"]]["chess_piece"] = "NONE"
+                self.cells[x][y]["player"] = "CPU"
+                self.cells[x][y]["chess_piece"] = "KNIGHT"
+                self.labels[self.save_cell["x"]][self.save_cell["y"]].config(
+                    text=""
+                )
+                label.config(
+                    text="KNIGHT"
+                )
+
+            elif self.cells[self.save_cell["x"]][self.save_cell["y"]]["player"] == "USER":
+                print("3")
+                # if not any(self.cells[y][x]) or self.cells[y][x]["player"] == "CPU":
+                self.cells[self.save_cell["x"]
+                           ][self.save_cell["y"]]["chess_piece"] = "NONE"
+                self.cells[x][y]["player"] = "USER"
+                self.cells[x][y]["chess_piece"] = "KNIGHT"
+                self.labels[self.save_cell["x"]][self.save_cell["y"]].config(
+                    text=""
+                )
+                label.config(
+                    text="KNIGHT"
+                )
+        elif name == "BISHOP":
+            print("1")
+            if self.cells[self.save_cell["x"]][self.save_cell["y"]]["player"] == "CPU":
+                print("2")
+                # if not any(self.cells[y][x]) or self.cells[x][y]["player"] == "USER":
+                self.cells[self.save_cell["x"]
+                           ][self.save_cell["y"]]["chess_piece"] = "NONE"
+                self.cells[x][y]["player"] = "CPU"
+                self.cells[x][y]["chess_piece"] = "BISHOP"
+                self.labels[self.save_cell["x"]][self.save_cell["y"]].config(
+                    text=""
+                )
+                label.config(
+                    text="BISHOP"
+                )
+
+            elif self.cells[self.save_cell["x"]][self.save_cell["y"]]["player"] == "USER":
+                print("3")
+                # if not any(self.cells[y][x]) or self.cells[y][x]["player"] == "CPU":
+                self.cells[self.save_cell["x"]
+                           ][self.save_cell["y"]]["chess_piece"] = "NONE"
+                self.cells[x][y]["player"] = "USER"
+                self.cells[x][y]["chess_piece"] = "BISHOP"
+                self.labels[self.save_cell["x"]][self.save_cell["y"]].config(
+                    text=""
+                )
+                label.config(
+                    text="BISHOP"
+                )
+
+        elif name == "KING":
+            print("1")
+            if self.cells[self.save_cell["x"]][self.save_cell["y"]]["player"] == "CPU":
+                print("2")
+                # if not any(self.cells[y][x]) or self.cells[x][y]["player"] == "USER":
+                self.cells[self.save_cell["x"]
+                           ][self.save_cell["y"]]["chess_piece"] = "NONE"
+                self.cells[x][y]["player"] = "CPU"
+                self.cells[x][y]["chess_piece"] = "KING"
+                self.labels[self.save_cell["x"]][self.save_cell["y"]].config(
+                    text=""
+                )
+                label.config(
+                    text="KING"
+                )
+
+            elif self.cells[self.save_cell["x"]][self.save_cell["y"]]["player"] == "USER":
+                print("3")
+                # if not any(self.cells[y][x]) or self.cells[y][x]["player"] == "CPU":
+                self.cells[self.save_cell["x"]
+                           ][self.save_cell["y"]]["chess_piece"] = "NONE"
+                self.cells[x][y]["player"] = "USER"
+                self.cells[x][y]["chess_piece"] = "KING"
+                self.labels[self.save_cell["x"]][self.save_cell["y"]].config(
+                    text=""
+                )
+                label.config(
+                    text="KING"
+                )
+        elif name == "QUEEN":
+            print("1")
+            if self.cells[self.save_cell["x"]][self.save_cell["y"]]["player"] == "CPU":
+                print("2")
+                # if not any(self.cells[y][x]) or self.cells[x][y]["player"] == "USER":
+                self.cells[self.save_cell["x"]
+                           ][self.save_cell["y"]]["chess_piece"] = "NONE"
+                self.cells[x][y]["player"] = "CPU"
+                self.cells[x][y]["chess_piece"] = "QUEEN"
+                self.labels[self.save_cell["x"]][self.save_cell["y"]].config(
+                    text=""
+                )
+                label.config(
+                    text="QUEEN"
+                )
+
+            elif self.cells[self.save_cell["x"]][self.save_cell["y"]]["player"] == "USER":
+                print("3")
+                # if not any(self.cells[y][x]) or self.cells[y][x]["player"] == "CPU":
+                self.cells[self.save_cell["x"]
+                           ][self.save_cell["y"]]["chess_piece"] = "NONE"
+                self.cells[x][y]["player"] = "USER"
+                self.cells[x][y]["chess_piece"] = "QUEEN"
+                self.labels[self.save_cell["x"]][self.save_cell["y"]].config(
+                    text=""
+                )
+                label.config(
+                    text="QUEEN"
+                )
 
         self.init_move_cells()
 
@@ -339,85 +485,6 @@ class Chess():
                     label.config(
                         bg="white"
                     )
-
-    # def pown_move(self, cell, y, x):
-    #     if self.player == CPU:
-    #         if self.cells[y][x] == "" or self.cells[y][x] == "USER_PAWN":
-    #             self.cells[y][x] = cell
-    #         else:
-    #             self.cant_move_alert()
-    #     elif self.player == USER:
-    #         if self.cells[y][x] == "" or self.cells[y][x] == "CPU_PAWN":
-    #             self.cells[y][x] = cell
-    #         else:
-    #             self.cant_move_alert()
-
-    # # ルークの動き
-    # def rook_move(self, cell, y, x):
-    #     if self.player == CPU:
-    #         if self.cells[y][x] == "" or self.cells[y][x] == "USER_ROOK":
-    #             self.cells[y][x] = cell
-    #         else:
-    #             self.cant_move_alert()
-    #     elif self.player == USER:
-    #         if self.cells[y][x] == "" or self.cells[y][x] == "CPU_ROOK":
-    #             self.cells[y][x] = cell
-    #         else:
-    #             self.cant_move_alert()
-    # # ナイトの動き
-
-    # def knight_move(self, cell, y, x):
-    #     if self.player == CPU:
-    #         if self.cells[y][x] == "" or self.cells[y][x] == "USER_KNIGHT":
-    #             self.cells[y][x] = cell
-    #         else:
-    #             self.cant_move_alert()
-    #     elif self.player == USER:
-    #         if self.cells[y][x] == "" or self.cells[y][x] == "CPU_NIGHT":
-    #             self.cells[y][x] = cell
-    #         else:
-    #             self.cant_move_alert()
-
-    # # ビショップの動き
-
-    # def bishop_move(self, cell, y, x):
-    #     if self.player == CPU:
-    #         if self.cells[y][x] == "" or self.cells[y][x] == "USER_BISHOP":
-    #             self.cells[y][x] = cell
-    #         else:
-    #             self.cant_move_alert()
-    #     elif self.player == USER:
-    #         if self.cells[y][x] == "" or self.cells[y][x] == "CPU_BISHOP":
-    #             self.cells[y][x] = cell
-    #         else:
-    #             self.cant_move_alert()
-
-    # # キングの動き
-    # def king_move(self, cell, y, x):
-    #     if self.player == CPU:
-    #         if self.cells[y][x] == "" or self.cells[y][x] == "USER_KING":
-    #             self.cells[y][x] = cell
-    #         else:
-    #             self.cant_move_alert()
-    #     elif self.player == USER:
-    #         if self.cells[y][x] == "" or self.cells[y][x] == "CPU_KING":
-    #             self.cells[y][x] = cell
-    #         else:
-    #             self.cant_move_alert()
-
-    # # クイーンの動き
-
-    # def queen_move(self, cell, y, x):
-    #     if self.player == CPU:
-    #         if self.cells[y][x] == "" or self.cells[y][x] == "USER_KING":
-    #             self.cells[y][x] = cell
-    #         else:
-    #             self.cant_move_alert()
-    #     elif self.player == USER:
-    #         if self.cells[y][x] == "" or self.cells[y][x] == "CPU_KING":
-    #             self.cells[y][x] = cell
-    #         else:
-    #             self.cant_move_alert()
 
     def cant_move_alert(self):
         messagebox.showinfo(
