@@ -37,14 +37,19 @@ class Chess():
 
         self.init_cells()
 
+        self.init_move_cells()
+
         self.placement_piece()
 
         # ↓GUIの作成
         self.create_widgets()
 
+        self.set_events()
         # debug呼び出し
         # cellsの中身の確認
         self.test_cells()
+
+        self.test_move_cells()
 
     # cellsの初期化
     def init_cells(self):
@@ -53,7 +58,7 @@ class Chess():
     # 移動できる場所を保持する配列の初期化
 
     def init_move_cells(self):
-        self.move_cells = [[False for i in range(self.width)]
+        self.move_cells = [[bool() for i in range(self.width)]
                            for j in range(self.height)]
 
     # 先行後攻選択
@@ -146,17 +151,29 @@ class Chess():
                 elif (i == 7 and j == 4):
                     self.cells[i][j] = user_queen_dict.copy()
 
-    def is_move(self, name, y, x):
-        self.init_move_cells()
-        if name == "PAWN":
-            if self.cells[y][x] == "CPU_PAWN":
-                if (y + 1) >= 0 and (y + 1) < self.height:
-                    # 今の状態だと移動先に何があっても移動できる
-                    self.move_cells[y + 1][x] = True
+    def is_move(self, event, arg):
 
-            elif self.cells[y][x] == "USER_PAWN":
-                if (y - 1) >= 0 and (y - 1) < self.height:
-                    self.move_cells[y - 1][x] = True
+        y = arg["y"]
+        x = arg["x"]
+        print(y, x)
+        # label = self.labels[y][x]
+        # label.config(
+        #     bg="wheit"
+        # )
+
+        name = self.cells[x][y]["chess_piece"]
+
+        self.init_move_cells()
+
+        if name == "PAWN":
+            if self.cells[x][y]["player"] == "CPU":
+                if (x + 1) >= 0 and (x + 1) < self.height:
+                    # 今の状態だと移動先に何があっても移動できる
+                    self.move_cells[y][x+1] = True
+
+            elif self.cells[x][y]["player"] == "USER":
+                if (x - 1) >= 0 and (x - 1) < self.height:
+                    self.move_cells[y][x-1] = True
 
         elif name == "ROOK":
             for i in range(4):
@@ -238,6 +255,21 @@ class Chess():
                         self.move_cells[y][x - j] = True
                     else:
                         continue
+
+        for i in range(self.height):
+            for j in range(self.width):
+                if self.move_cells[i][j]:
+                    label = self.labels[j][i]
+                    label.config(
+                        bg="red"
+                    )
+                else:
+                    label = self.labels[j][i]
+                    label.config(
+                        bg="white"
+                    )
+
+        self.test_move_cells()
 
     def pown_move(self, cell, y, x):
         if self.player == CPU:
@@ -329,22 +361,135 @@ class Chess():
         # ラベルウィジェット管理用のリストを作成
         self.labels = [[None] * self.width for j in range(self.height)]
 
-        for j in range(self.height):
-            for i in range(self.width):
+        for i in range(self.height):
+            for j in range(self.width):
 
-                # まずはテキストなしでラベルを作成
-                label = tk.Label(
-                    self.app,
-                    width=10,
-                    height=6,
-                    bg="lightgray",
-                    relief=tk.RAISED
-                )
+                if (i == 1):
+                    label = tk.Label(
+                        self.app,
+                        text='PAWN',
+                        width=10,
+                        height=6,
+                        relief=tk.RAISED
+                    )
+                elif (i == 0 and j == 0) or (i == 0 and j == 7):
+                    label = tk.Label(
+                        self.app,
+                        text='ROOK',
+                        width=10,
+                        height=6,
+                        relief=tk.RAISED
+                    )
+                elif (i == 0 and j == 1) or (i == 0 and j == 6):
+                    label = tk.Label(
+                        self.app,
+                        text='KNIGHT',
+                        width=10,
+                        height=6,
+                        relief=tk.RAISED
+                    )
+                elif (i == 0 and j == 2) or (i == 0 and j == 5):
+                    label = tk.Label(
+                        self.app,
+                        text='BISHOP',
+                        width=10,
+                        height=6,
+                        relief=tk.RAISED
+                    )
+                elif (i == 0 and j == 3):
+                    label = tk.Label(
+                        self.app,
+                        text='KING',
+                        width=10,
+                        height=6,
+                        relief=tk.RAISED
+                    )
+                elif (i == 0 and j == 4):
+                    label = tk.Label(
+                        self.app,
+                        text='QUEEN',
+                        width=10,
+                        height=6,
+                        relief=tk.RAISED
+                    )
+                # USERのコマ配置
+                elif (i == 6):
+                    label = tk.Label(
+                        self.app,
+                        text='PAWN',
+                        width=10,
+                        height=6,
+                        relief=tk.RAISED
+                    )
+                elif (i == 7 and j == 0) or (i == 7 and j == 7):
+                    label = tk.Label(
+                        self.app,
+                        text='ROOK',
+                        width=10,
+                        height=6,
+                        relief=tk.RAISED
+                    )
+                elif (i == 7 and j == 1) or (i == 7 and j == 6):
+                    label = tk.Label(
+                        self.app,
+                        text='KNIGHT',
+                        width=10,
+                        height=6,
+                        relief=tk.RAISED
+                    )
+                elif (i == 7 and j == 2) or (i == 7 and j == 5):
+                    label = tk.Label(
+                        self.app,
+                        text='BISHOP',
+                        width=10,
+                        height=6,
+                        relief=tk.RAISED
+                    )
+                elif (i == 7 and j == 3):
+                    label = tk.Label(
+                        self.app,
+                        text='KING',
+                        width=10,
+                        height=6,
+                        relief=tk.RAISED
+                    )
+                elif (i == 7 and j == 4):
+                    label = tk.Label(
+                        self.app,
+                        text='QUEEN',
+                        width=10,
+                        height=6,
+                        relief=tk.RAISED
+                    )
+                else:
+                    # まずはテキストなしでラベルを作成
+                    label = tk.Label(
+                        self.app,
+                        width=10,
+                        height=6,
+                        relief=tk.RAISED
+                    )
                 # ラベルを配置
-                label.grid(column=i, row=j)
+                label.grid(column=j, row=i)
 
                 # その座標のラベルのインスタンスを覚えておく
-                self.labels[j][i] = label
+                self.labels[i][j] = label
+
+    def set_events(self):
+
+        # 全ラベルに対してイベントを設定
+        for i in range(self.height):
+            for j in range(self.width):
+
+                label = self.labels[j][i]
+                data = {"y": i, "x": j}
+
+                # 左クリック時のイベント設定
+                label.bind("<ButtonPress-1>", lambda event,
+                           arg=data: self.is_move(event, arg))
+
+                # 右クリック時のイベント設定
+                # label.bind("<ButtonPress-2>", self.raise_flag)
 
     ################################################################################
 
@@ -357,9 +502,15 @@ class Chess():
         for i in range(self.width):
             for j in range(self.height):
                 if any(self.cells[i][j]):
-                    print(self.cells[i][j]["player"], end=' ')
+                    print(self.cells[i][j]["chess_piece"], end=' ')
                 else:
                     print("NONE", end=' ')
+            print()
+
+    def test_move_cells(self):
+        for i in range(self.width):
+            for j in range(self.height):
+                print(self.move_cells[i][j], end=' ')
             print()
 
 
