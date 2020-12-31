@@ -22,6 +22,8 @@ class Chess():
         self.cells = None
         self.move_cells = None
 
+        self.save_cell = None
+
         self.height = HEIGHT
         self.width = WIDTH
 
@@ -156,105 +158,174 @@ class Chess():
         y = arg["y"]
         x = arg["x"]
         print(y, x)
-        # label = self.labels[y][x]
-        # label.config(
-        #     bg="wheit"
-        # )
+        print(self.move_cells[y][x])
 
-        name = self.cells[x][y]["chess_piece"]
+        if any(self.cells[x][y]):
+            name = self.cells[x][y]["chess_piece"]
+        else:
+            name = None
 
-        self.init_move_cells()
+        if self.move_cells[y][x]:
+            name = self.cells[self.save_cell["x"]
+                              ][self.save_cell["y"]]["chess_piece"]
+            self.move(name, y, x)
+        else:
+            self.init_move_cells()
+
+            if name == "PAWN":
+                if self.cells[x][y]["player"] == "CPU":
+                    if (x + 1) >= 0 and (x + 1) < self.height:
+                        if x == 1:
+                            self.move_cells[y][x + 1] = True
+                            self.move_cells[y][x + 2] = True
+                        else:
+                            self.move_cells[y][x + 1] = True
+
+                elif self.cells[x][y]["player"] == "USER":
+                    if (x - 1) >= 0 and (x - 1) < self.height:
+                        if x == 6:
+                            self.move_cells[y][x - 1] = True
+                            self.move_cells[y][x - 2] = True
+                        else:
+                            self.move_cells[y][x - 1] = True
+
+            elif name == "ROOK":
+                for i in range(4):
+                    for j in range(8):
+                        if i == 0 and (y-j) >= 0 and (y-j) < self.height:
+                            self.move_cells[y - j][x] = True
+                        elif i == 1 and (y+j) >= 0 and (y+j) < self.height:
+                            self.move_cells[y + j][x] = True
+                        elif i == 2 and (x-j) >= 0 and (x-j) < self.height:
+                            self.move_cells[y][x - j] = True
+                        elif i == 3 and (x+j) >= 0 and (x+j) < self.height:
+                            self.move_cells[y][x - j] = True
+                        else:
+                            continue
+
+            elif name == "KNIGHT":
+                if y - 2 >= 0 and x - 1 >= 0 and y - 2 < self.height and x - 1 < self.width:
+                    self.move_cells[y - 2][x - 1] = True
+
+                if y - 1 >= 0 and x - 2 >= 0 and y - 1 < self.height and x - 2 < self.width:
+                    self.move_cells[y - 1][x - 2] = True
+
+                if y - 2 >= 0 and x + 1 >= 0 and y - 2 < self.height and x + 1 < self.width:
+                    self.move_cells[y - 2][x + 1] = True
+
+                if y - 1 >= 0 and x + 2 >= 0 and y - 1 < self.height and x + 2 < self.width:
+                    self.move_cells[y - 1][x + 2] = True
+
+                if y + 1 >= 0 and x - 2 >= 0 and y + 1 < self.height and x - 2 < self.width:
+                    self.move_cells[y + 1][x - 2] = True
+
+                if y + 2 >= 0 and x - 1 >= 0 and y + 2 < self.height and x - 1 < self.width:
+                    self.move_cells[y + 2][x - 1] = True
+
+                if y + 1 >= 0 and x + 2 >= 0 and y + 1 < self.height and x + 2 < self.width:
+                    self.move_cells[y + 1][x + 2] = True
+
+                if y + 2 >= 0 and x + 1 >= 0 and y + 2 < self.height and x + 1 < self.width:
+                    self.move_cells[y + 2][x + 1] = True
+
+            elif name == "BISHOP":
+                for i in range(4):
+                    for j in range(8):
+                        if i == 0 and y-j >= 0 and x-j >= 0 and y-j < self.height and x-j < self.width:
+                            self.move_cells[y - j][x - j] = True
+                        elif i == 1 and y-j >= 0 and x+j >= 0 and y-j < self.height and x+j < self.width:
+                            self.move_cells[y - j][x + j] = True
+                        elif i == 2 and y+j >= 0 and x-j >= 0 and y+j < self.height and x-j < self.width:
+                            self.move_cells[y + j][x - j] = True
+                        elif i == 3 and y+j >= 0 and x+j >= 0 and y+j < self.height and x+j < self.width:
+                            self.move_cells[y + j][x + j] = True
+                        else:
+                            continue
+
+            elif name == "KING":
+                for i in range(-1, 2):
+                    for j in range(-1, 2):
+                        if y+i >= 0 and x+j >= 0 and y+i < self.height and x+j < self.width and not(i == 0 and j == 0):
+                            self.move_cells[y+i][x+j] = True
+
+            elif name == "QUEEN":
+                for i in range(8):
+                    for j in range(8):
+                        if i == 0 and y-j >= 0 and x-j >= 0 and y-j < self.height and x-j < self.width:
+                            self.move_cells[y - j][x - j] = True
+                        elif i == 1 and y-j >= 0 and x+j >= 0 and y-j < self.height and x+j < self.width:
+                            self.move_cells[y - j][x + j] = True
+                        elif i == 2 and y+j >= 0 and x-j >= 0 and y+j < self.height and x-j < self.width:
+                            self.move_cells[y + j][x - j] = True
+                        elif i == 3 and y+j >= 0 and x+j >= 0 and y+j < self.height and x+j < self.width:
+                            self.move_cells[y + j][x + j] = True
+                        elif i == 4 and (y-j) >= 0 and (y-j) < self.height:
+                            self.move_cells[y - j][x] = True
+                        elif i == 5 and (y+j) >= 0 and (y+j) < self.height:
+                            self.move_cells[y + j][x] = True
+                        elif i == 6 and (x-j) >= 0 and (x-j) < self.width:
+                            self.move_cells[y][x - j] = True
+                        elif i == 7 and (x+j) >= 0 and (x+j) < self.width:
+                            self.move_cells[y][x - j] = True
+                        else:
+                            continue
+
+            for i in range(self.height):
+                for j in range(self.width):
+                    if self.move_cells[i][j]:
+                        label = self.labels[j][i]
+                        label.config(
+                            bg="red"
+                        )
+                    else:
+                        label = self.labels[j][i]
+                        label.config(
+                            bg="white"
+                        )
+            self.save_cell = {
+                "y": y,
+                "x": x
+            }
+            self.test_cells()
+            self.test_move_cells()
+
+    def move(self, name, y, x):
+
+        label = self.labels[x][y]
+
+        print(name)
 
         if name == "PAWN":
-            if self.cells[x][y]["player"] == "CPU":
-                if (x + 1) >= 0 and (x + 1) < self.height:
-                    # 今の状態だと移動先に何があっても移動できる
-                    self.move_cells[y][x+1] = True
+            print("1")
+            if self.cells[self.save_cell["x"]][self.save_cell["y"]]["player"] == "CPU":
+                print("2")
+                # if not any(self.cells[y][x]) or self.cells[x][y]["player"] == "USER":
+                self.cells[self.save_cell["x"]
+                           ][self.save_cell["y"]]["chess_piece"] = "NONE"
+                self.cells[x][y]["player"] = "CPU"
+                self.cells[x][y]["chess_piece"] = "PAWN"
+                self.labels[self.save_cell["x"]][self.save_cell["y"]].config(
+                    text=""
+                )
+                label.config(
+                    text="PAWN"
+                )
 
-            elif self.cells[x][y]["player"] == "USER":
-                if (x - 1) >= 0 and (x - 1) < self.height:
-                    self.move_cells[y][x-1] = True
+            elif self.cells[self.save_cell["x"]][self.save_cell["y"]]["player"] == "USER":
+                print("3")
+                # if not any(self.cells[y][x]) or self.cells[y][x]["player"] == "CPU":
+                self.cells[self.save_cell["x"]
+                           ][self.save_cell["y"]]["chess_piece"] = "NONE"
+                self.cells[x][y]["player"] = "USER"
+                self.cells[x][y]["chess_piece"] = "PAWN"
+                self.labels[self.save_cell["x"]][self.save_cell["y"]].config(
+                    text=""
+                )
+                label.config(
+                    text="PAWN"
+                )
 
-        elif name == "ROOK":
-            for i in range(4):
-                for j in range(8):
-                    if i == 0 and (y-j) >= 0 and (y-j) < self.height:
-                        self.move_cells[y - j][x] = True
-                    elif i == 1 and (y+j) >= 0 and (y+j) < self.height:
-                        self.move_cells[y + j][x] = True
-                    elif i == 2 and (x-j) >= 0 and (x-j) < self.height:
-                        self.move_cells[y][x - j] = True
-                    elif i == 3 and (x+j) >= 0 and (x+j) < self.height:
-                        self.move_cells[y][x - j] = True
-                    else:
-                        continue
-
-        elif name == "KNIGHT":
-            if y - 2 >= 0 and x - 1 >= 0 and y - 2 < self.height and x - 1 < self.width:
-                self.move_cells[y - 2][x - 1] = True
-
-            if y - 1 >= 0 and x - 2 >= 0 and y - 1 < self.height and x - 2 < self.width:
-                self.move_cells[y - 1][x - 2] = True
-
-            if y - 2 >= 0 and x + 1 >= 0 and y - 2 < self.height and x + 1 < self.width:
-                self.move_cells[y - 2][x + 1] = True
-
-            if y - 1 >= 0 and x + 2 >= 0 and y - 1 < self.height and x + 2 < self.width:
-                self.move_cells[y - 1][x + 2] = True
-
-            if y + 1 >= 0 and x - 2 >= 0 and y + 1 < self.height and x - 2 < self.width:
-                self.move_cells[y + 1][x - 2] = True
-
-            if y + 2 >= 0 and x - 1 >= 0 and y + 2 < self.height and x - 1 < self.width:
-                self.move_cells[y + 2][x - 1] = True
-
-            if y + 1 >= 0 and x + 2 >= 0 and y + 1 < self.height and x + 2 < self.width:
-                self.move_cells[y + 1][x + 2] = True
-
-            if y + 2 >= 0 and x + 1 >= 0 and y + 2 < self.height and x + 1 < self.width:
-                self.move_cells[y + 2][x + 1] = True
-
-        elif name == "BISHOP":
-            for i in range(4):
-                for j in range(8):
-                    if i == 0 and y-j >= 0 and x-j >= 0 and y-j < self.height and x-j < self.width:
-                        self.move_cells[y - j][x - j] = True
-                    elif i == 1 and y-j >= 0 and x+j >= 0 and y-j < self.height and x+j < self.width:
-                        self.move_cells[y - j][x + j] = True
-                    elif i == 2 and y+j >= 0 and x-j >= 0 and y+j < self.height and x-j < self.width:
-                        self.move_cells[y + j][x - j] = True
-                    elif i == 3 and y+j >= 0 and x+j >= 0 and y+j < self.height and x+j < self.width:
-                        self.move_cells[y + j][x + j] = True
-                    else:
-                        continue
-
-        elif name == "KING":
-            for i in range(-1, 2):
-                for j in range(-1, 2):
-                    if y+i >= 0 and x+j >= 0 and y+i < self.height and x+j < self.width and not(i == 0 and j == 0):
-                        self.move_cells[y+i][x+j] = True
-
-        elif name == "QUEEN":
-            for i in range(8):
-                for j in range(8):
-                    if i == 0 and y-j >= 0 and x-j >= 0 and y-j < self.height and x-j < self.width:
-                        self.move_cells[y - j][x - j] = True
-                    elif i == 1 and y-j >= 0 and x+j >= 0 and y-j < self.height and x+j < self.width:
-                        self.move_cells[y - j][x + j] = True
-                    elif i == 2 and y+j >= 0 and x-j >= 0 and y+j < self.height and x-j < self.width:
-                        self.move_cells[y + j][x - j] = True
-                    elif i == 3 and y+j >= 0 and x+j >= 0 and y+j < self.height and x+j < self.width:
-                        self.move_cells[y + j][x + j] = True
-                    elif i == 4 and (y-j) >= 0 and (y-j) < self.height:
-                        self.move_cells[y - j][x] = True
-                    elif i == 5 and (y+j) >= 0 and (y+j) < self.height:
-                        self.move_cells[y + j][x] = True
-                    elif i == 6 and (x-j) >= 0 and (x-j) < self.width:
-                        self.move_cells[y][x - j] = True
-                    elif i == 7 and (x+j) >= 0 and (x+j) < self.width:
-                        self.move_cells[y][x - j] = True
-                    else:
-                        continue
+        self.init_move_cells()
 
         for i in range(self.height):
             for j in range(self.width):
@@ -269,86 +340,84 @@ class Chess():
                         bg="white"
                     )
 
-        self.test_move_cells()
+    # def pown_move(self, cell, y, x):
+    #     if self.player == CPU:
+    #         if self.cells[y][x] == "" or self.cells[y][x] == "USER_PAWN":
+    #             self.cells[y][x] = cell
+    #         else:
+    #             self.cant_move_alert()
+    #     elif self.player == USER:
+    #         if self.cells[y][x] == "" or self.cells[y][x] == "CPU_PAWN":
+    #             self.cells[y][x] = cell
+    #         else:
+    #             self.cant_move_alert()
 
-    def pown_move(self, cell, y, x):
-        if self.player == CPU:
-            if self.cells[y][x] == "" or self.cells[y][x] == "USER_PAWN":
-                self.cells[y][x] = cell
-            else:
-                self.cant_move_alert()
-        elif self.player == USER:
-            if self.cells[y][x] == "" or self.cells[y][x] == "CPU_PAWN":
-                self.cells[y][x] = cell
-            else:
-                self.cant_move_alert()
+    # # ルークの動き
+    # def rook_move(self, cell, y, x):
+    #     if self.player == CPU:
+    #         if self.cells[y][x] == "" or self.cells[y][x] == "USER_ROOK":
+    #             self.cells[y][x] = cell
+    #         else:
+    #             self.cant_move_alert()
+    #     elif self.player == USER:
+    #         if self.cells[y][x] == "" or self.cells[y][x] == "CPU_ROOK":
+    #             self.cells[y][x] = cell
+    #         else:
+    #             self.cant_move_alert()
+    # # ナイトの動き
 
-    # ルークの動き
-    def rook_move(self, cell, y, x):
-        if self.player == CPU:
-            if self.cells[y][x] == "" or self.cells[y][x] == "USER_ROOK":
-                self.cells[y][x] = cell
-            else:
-                self.cant_move_alert()
-        elif self.player == USER:
-            if self.cells[y][x] == "" or self.cells[y][x] == "CPU_ROOK":
-                self.cells[y][x] = cell
-            else:
-                self.cant_move_alert()
-    # ナイトの動き
+    # def knight_move(self, cell, y, x):
+    #     if self.player == CPU:
+    #         if self.cells[y][x] == "" or self.cells[y][x] == "USER_KNIGHT":
+    #             self.cells[y][x] = cell
+    #         else:
+    #             self.cant_move_alert()
+    #     elif self.player == USER:
+    #         if self.cells[y][x] == "" or self.cells[y][x] == "CPU_NIGHT":
+    #             self.cells[y][x] = cell
+    #         else:
+    #             self.cant_move_alert()
 
-    def knight_move(self, cell, y, x):
-        if self.player == CPU:
-            if self.cells[y][x] == "" or self.cells[y][x] == "USER_KNIGHT":
-                self.cells[y][x] = cell
-            else:
-                self.cant_move_alert()
-        elif self.player == USER:
-            if self.cells[y][x] == "" or self.cells[y][x] == "CPU_NIGHT":
-                self.cells[y][x] = cell
-            else:
-                self.cant_move_alert()
+    # # ビショップの動き
 
-    # ビショップの動き
+    # def bishop_move(self, cell, y, x):
+    #     if self.player == CPU:
+    #         if self.cells[y][x] == "" or self.cells[y][x] == "USER_BISHOP":
+    #             self.cells[y][x] = cell
+    #         else:
+    #             self.cant_move_alert()
+    #     elif self.player == USER:
+    #         if self.cells[y][x] == "" or self.cells[y][x] == "CPU_BISHOP":
+    #             self.cells[y][x] = cell
+    #         else:
+    #             self.cant_move_alert()
 
-    def bishop_move(self, cell, y, x):
-        if self.player == CPU:
-            if self.cells[y][x] == "" or self.cells[y][x] == "USER_BISHOP":
-                self.cells[y][x] = cell
-            else:
-                self.cant_move_alert()
-        elif self.player == USER:
-            if self.cells[y][x] == "" or self.cells[y][x] == "CPU_BISHOP":
-                self.cells[y][x] = cell
-            else:
-                self.cant_move_alert()
+    # # キングの動き
+    # def king_move(self, cell, y, x):
+    #     if self.player == CPU:
+    #         if self.cells[y][x] == "" or self.cells[y][x] == "USER_KING":
+    #             self.cells[y][x] = cell
+    #         else:
+    #             self.cant_move_alert()
+    #     elif self.player == USER:
+    #         if self.cells[y][x] == "" or self.cells[y][x] == "CPU_KING":
+    #             self.cells[y][x] = cell
+    #         else:
+    #             self.cant_move_alert()
 
-    # キングの動き
-    def king_move(self, cell, y, x):
-        if self.player == CPU:
-            if self.cells[y][x] == "" or self.cells[y][x] == "USER_KING":
-                self.cells[y][x] = cell
-            else:
-                self.cant_move_alert()
-        elif self.player == USER:
-            if self.cells[y][x] == "" or self.cells[y][x] == "CPU_KING":
-                self.cells[y][x] = cell
-            else:
-                self.cant_move_alert()
+    # # クイーンの動き
 
-    # クイーンの動き
-
-    def queen_move(self, cell, y, x):
-        if self.player == CPU:
-            if self.cells[y][x] == "" or self.cells[y][x] == "USER_KING":
-                self.cells[y][x] = cell
-            else:
-                self.cant_move_alert()
-        elif self.player == USER:
-            if self.cells[y][x] == "" or self.cells[y][x] == "CPU_KING":
-                self.cells[y][x] = cell
-            else:
-                self.cant_move_alert()
+    # def queen_move(self, cell, y, x):
+    #     if self.player == CPU:
+    #         if self.cells[y][x] == "" or self.cells[y][x] == "USER_KING":
+    #             self.cells[y][x] = cell
+    #         else:
+    #             self.cant_move_alert()
+    #     elif self.player == USER:
+    #         if self.cells[y][x] == "" or self.cells[y][x] == "CPU_KING":
+    #             self.cells[y][x] = cell
+    #         else:
+    #             self.cant_move_alert()
 
     def cant_move_alert(self):
         messagebox.showinfo(
