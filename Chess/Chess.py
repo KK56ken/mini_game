@@ -203,10 +203,11 @@ class Chess():
                         else:
                             self.move_cells[y][x - 1] = True
 
-                    if (x - 1) >= 0 and (x - 1) < self.height:
+                    if (x - 1) >= 0 and (y - 1) >= 0 and (x - 1) < self.height and (y - 1) < self.width:
                         if self.cells[x - 1][y - 1]["player"] == "CPU":
                             self.move_cells[y - 1][x - 1] = True
-                        elif self.cells[x - 1][y + 1]["player"] == "CPU":
+                    elif (x - 1) >= 0 and (y + 1) >= 0 and (x - 1) < self.height and (y + 1) < self.width:
+                        if self.cells[x - 1][y + 1]["player"] == "CPU":
                             self.move_cells[y + 1][x - 1] = True
 
             elif name == "ROOK":
