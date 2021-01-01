@@ -192,14 +192,18 @@ class Chess():
             elif name == "ROOK":
                 for i in range(4):
                     for j in range(8):
-                        if i == 0 and (y-j) >= 0 and (y-j) < self.height:
-                            self.move_cells[y - j][x] = True
-                        elif i == 1 and (y+j) >= 0 and (y+j) < self.height:
-                            self.move_cells[y + j][x] = True
-                        elif i == 2 and (x-j) >= 0 and (x-j) < self.height:
-                            self.move_cells[y][x - j] = True
-                        elif i == 3 and (x+j) >= 0 and (x+j) < self.height:
-                            self.move_cells[y][x - j] = True
+                        if i == 0 and (y - j) >= 0 and (y - j) < self.height:
+                            if not (y - j == y):
+                                self.move_cells[y - j][x] = True
+                        elif i == 1 and (y + j) >= 0 and (y + j) < self.height:
+                            if not (y + j == y):
+                                self.move_cells[y + j][x] = True
+                        elif i == 2 and (x - j) >= 0 and (x - j) < self.height:
+                            if not (x - j == x):
+                                self.move_cells[y][x - j] = True
+                        elif i == 3 and (x + j) >= 0 and (x + j) < self.height:
+                            if not (x + j == x):
+                                self.move_cells[y][x + j] = True
                         else:
                             continue
 
@@ -231,14 +235,18 @@ class Chess():
             elif name == "BISHOP":
                 for i in range(4):
                     for j in range(8):
-                        if i == 0 and y-j >= 0 and x-j >= 0 and y-j < self.height and x-j < self.width:
-                            self.move_cells[y - j][x - j] = True
-                        elif i == 1 and y-j >= 0 and x+j >= 0 and y-j < self.height and x+j < self.width:
-                            self.move_cells[y - j][x + j] = True
-                        elif i == 2 and y+j >= 0 and x-j >= 0 and y+j < self.height and x-j < self.width:
-                            self.move_cells[y + j][x - j] = True
-                        elif i == 3 and y+j >= 0 and x+j >= 0 and y+j < self.height and x+j < self.width:
-                            self.move_cells[y + j][x + j] = True
+                        if i == 0 and y - j >= 0 and x - j >= 0 and y - j < self.height and x - j < self.width:
+                            if not (y - j == y and x - j == x):
+                                self.move_cells[y - j][x - j] = True
+                        elif i == 1 and y - j >= 0 and x + j >= 0 and y - j < self.height and x + j < self.width:
+                            if not (y - j == y and x + j == x):
+                                self.move_cells[y - j][x + j] = True
+                        elif i == 2 and y + j >= 0 and x - j >= 0 and y + j < self.height and x - j < self.width:
+                            if not (y + j == y and x - j == x):
+                                self.move_cells[y + j][x - j] = True
+                        elif i == 3 and y + j >= 0 and x + j >= 0 and y + j < self.height and x + j < self.width:
+                            if not (y + j == y and x + j == x):
+                                self.move_cells[y + j][x + j] = True
                         else:
                             continue
 
@@ -251,22 +259,30 @@ class Chess():
             elif name == "QUEEN":
                 for i in range(8):
                     for j in range(8):
-                        if i == 0 and y-j >= 0 and x-j >= 0 and y-j < self.height and x-j < self.width:
-                            self.move_cells[y - j][x - j] = True
-                        elif i == 1 and y-j >= 0 and x+j >= 0 and y-j < self.height and x+j < self.width:
-                            self.move_cells[y - j][x + j] = True
-                        elif i == 2 and y+j >= 0 and x-j >= 0 and y+j < self.height and x-j < self.width:
-                            self.move_cells[y + j][x - j] = True
-                        elif i == 3 and y+j >= 0 and x+j >= 0 and y+j < self.height and x+j < self.width:
-                            self.move_cells[y + j][x + j] = True
-                        elif i == 4 and (y-j) >= 0 and (y-j) < self.height:
-                            self.move_cells[y - j][x] = True
-                        elif i == 5 and (y+j) >= 0 and (y+j) < self.height:
-                            self.move_cells[y + j][x] = True
-                        elif i == 6 and (x-j) >= 0 and (x-j) < self.width:
-                            self.move_cells[y][x - j] = True
-                        elif i == 7 and (x+j) >= 0 and (x+j) < self.width:
-                            self.move_cells[y][x - j] = True
+                        if i == 0 and y - j >= 0 and x - j >= 0 and y - j < self.height and x - j < self.width:
+                            if not (y - j == y and x - j == x):
+                                self.move_cells[y - j][x - j] = True
+                        elif i == 1 and y - j >= 0 and x + j >= 0 and y - j < self.height and x + j < self.width:
+                            if not (y - j == y and x + j == x):
+                                self.move_cells[y - j][x + j] = True
+                        elif i == 2 and y + j >= 0 and x - j >= 0 and y + j < self.height and x - j < self.width:
+                            if not (y + j == y and x - j == x):
+                                self.move_cells[y + j][x - j] = True
+                        elif i == 3 and y + j >= 0 and x + j >= 0 and y + j < self.height and x + j < self.width:
+                            if not (y + j == y and x + j == x):
+                                self.move_cells[y + j][x + j] = True
+                        elif i == 4 and (y - j) >= 0 and (y - j) < self.height:
+                            if not (y - j == y):
+                                self.move_cells[y - j][x] = True
+                        elif i == 5 and (y + j) >= 0 and (y + j) < self.height:
+                            if not (y + j == y):
+                                self.move_cells[y + j][x] = True
+                        elif i == 6 and (x - j) >= 0 and (x - j) < self.width:
+                            if not (x - j == x):
+                                self.move_cells[y][x - j] = True
+                        elif i == 7 and (x + j) >= 0 and (x + j) < self.width:
+                            if not (x + j == x):
+                                self.move_cells[y][x + j] = True
                         else:
                             continue
 
@@ -286,6 +302,12 @@ class Chess():
                 "y": y,
                 "x": x
             }
+
+            # if self.save_cell["y"] == y and self.save_cell["x"] == x:
+            #     label = self.labels[j][i]
+            #     label.config(
+            #         bg="white"
+            #     )
             self.test_cells()
             self.test_move_cells()
 
