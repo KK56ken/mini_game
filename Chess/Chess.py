@@ -53,6 +53,8 @@ class Chess():
 
         self.test_move_cells()
 
+        self.test_player_cells()
+
     # cellsの初期化
     def init_cells(self):
         self.cells = [[dict() for i in range(self.width)]
@@ -75,6 +77,10 @@ class Chess():
     # コマの配置
 
     def placement_piece(self):
+        null_dict = {
+            "player": "",
+            "chess_piece": ""
+        }
         cpu_pawn_dict = {
             "player": "CPU",
             "chess_piece": "PAWN"
@@ -140,7 +146,7 @@ class Chess():
                 elif (i == 0 and j == 4):
                     self.cells[i][j] = cpu_queen_dict.copy()
                 # USERのコマ配置
-                if (i == 6):
+                elif (i == 6):
                     self.cells[i][j] = user_pawn_dict.copy()
                 elif (i == 7 and j == 0) or (i == 7 and j == 7):
                     self.cells[i][j] = user_rook_dict.copy()
@@ -152,6 +158,8 @@ class Chess():
                     self.cells[i][j] = user_king_dict.copy()
                 elif (i == 7 and j == 4):
                     self.cells[i][j] = user_queen_dict.copy()
+                else:
+                    self.cells[i][j] = null_dict.copy()
 
     def is_move(self, event, arg):
 
@@ -174,38 +182,53 @@ class Chess():
 
             if name == "PAWN":
                 if self.cells[x][y]["player"] == "CPU":
-                    if (x + 1) >= 0 and (x + 1) < self.height:
+                    if (x + 1) >= 0 and (x + 1) < self.height and not self.cells[x+1][y]["player"] == "USER":
                         if x == 1:
                             self.move_cells[y][x + 1] = True
                             self.move_cells[y][x + 2] = True
                         else:
                             self.move_cells[y][x + 1] = True
 
-                elif self.cells[x][y]["player"] == "USER":
                     if (x - 1) >= 0 and (x - 1) < self.height:
+                        if self.cells[x - 1][y - 1]["player"] == "USER":
+                            self.move_cells[y - 1][x - 1] = True
+                        elif self.cells[x - 1][y + 1]["player"] == "USER":
+                            self.move_cells[y + 1][x - 1] = True
+
+                elif self.cells[x][y]["player"] == "USER":
+                    if (x - 1) >= 0 and (x - 1) < self.height and not self.cells[x-1][y]["player"] == "CPU":
                         if x == 6:
                             self.move_cells[y][x - 1] = True
                             self.move_cells[y][x - 2] = True
                         else:
                             self.move_cells[y][x - 1] = True
 
+                    if (x - 1) >= 0 and (x - 1) < self.height:
+                        if self.cells[x - 1][y - 1]["player"] == "CPU":
+                            self.move_cells[y - 1][x - 1] = True
+                        elif self.cells[x - 1][y + 1]["player"] == "CPU":
+                            self.move_cells[y + 1][x - 1] = True
+
             elif name == "ROOK":
                 for i in range(4):
                     for j in range(8):
-                        if i == 0 and (y - j) >= 0 and (y - j) < self.height:
-                            if not (y - j == y):
-                                self.move_cells[y - j][x] = True
-                        elif i == 1 and (y + j) >= 0 and (y + j) < self.height:
-                            if not (y + j == y):
-                                self.move_cells[y + j][x] = True
-                        elif i == 2 and (x - j) >= 0 and (x - j) < self.height:
-                            if not (x - j == x):
-                                self.move_cells[y][x - j] = True
-                        elif i == 3 and (x + j) >= 0 and (x + j) < self.height:
-                            if not (x + j == x):
-                                self.move_cells[y][x + j] = True
-                        else:
-                            continue
+                        if (y - j) >= 0 and (y - j) < self.height or (y + j) >= 0 and (y + j) < self.height or (x - j) >= 0 and (x - j) < self.height or (x + j) >= 0 and (x + j) < self.height:
+                            if not self.cells[x][y - j]["player"] == "USER" or not self.cells[x][y + j]["player"] == "USER" or not self.cells[x - j][y]["player"] == "USER" or not self.cells[x + j][y]["player"] == "USER":
+                                break
+                            if i == 0:
+                                if not (y - j == y) and not self.cells[x][y-j]["player"] == "CPU":
+                                    self.move_cells[y - j][x] = True
+                            elif i == 1:
+                                if not (y + j == y) and not self.cells[x][y+j]["player"] == "CPU":
+                                    self.move_cells[y + j][x] = True
+                            elif i == 2:
+                                if not (x - j == x) and not self.cells[x-j][y]["player"] == "CPU":
+                                    self.move_cells[y][x - j] = True
+                            elif i == 3:
+                                if not (x + j == x) and not self.cells[x+j][y]["player"] == "CPU":
+                                    self.move_cells[y][x + j] = True
+                            else:
+                                continue
 
             elif name == "KNIGHT":
                 if y - 2 >= 0 and x - 1 >= 0 and y - 2 < self.height and x - 1 < self.width:
@@ -310,6 +333,7 @@ class Chess():
             #     )
             self.test_cells()
             self.test_move_cells()
+            self.test_player_cells()
 
     def move(self, name, y, x):
 
@@ -323,7 +347,9 @@ class Chess():
                 print("2")
                 # if not any(self.cells[y][x]) or self.cells[x][y]["player"] == "USER":
                 self.cells[self.save_cell["x"]
-                           ][self.save_cell["y"]]["chess_piece"] = "NONE"
+                           ][self.save_cell["y"]]["chess_piece"] = ""
+                self.cells[self.save_cell["x"]
+                           ][self.save_cell["y"]]["player"] = ""
                 self.cells[x][y]["player"] = "CPU"
                 self.cells[x][y]["chess_piece"] = "PAWN"
                 self.labels[self.save_cell["x"]][self.save_cell["y"]].config(
@@ -337,7 +363,9 @@ class Chess():
                 print("3")
                 # if not any(self.cells[y][x]) or self.cells[y][x]["player"] == "CPU":
                 self.cells[self.save_cell["x"]
-                           ][self.save_cell["y"]]["chess_piece"] = "NONE"
+                           ][self.save_cell["y"]]["chess_piece"] = ""
+                self.cells[self.save_cell["x"]
+                           ][self.save_cell["y"]]["player"] = ""
                 self.cells[x][y]["player"] = "USER"
                 self.cells[x][y]["chess_piece"] = "PAWN"
                 self.labels[self.save_cell["x"]][self.save_cell["y"]].config(
@@ -352,7 +380,9 @@ class Chess():
                 print("2")
                 # if not any(self.cells[y][x]) or self.cells[x][y]["player"] == "USER":
                 self.cells[self.save_cell["x"]
-                           ][self.save_cell["y"]]["chess_piece"] = "NONE"
+                           ][self.save_cell["y"]]["chess_piece"] = ""
+                self.cells[self.save_cell["x"]
+                           ][self.save_cell["y"]]["player"] = ""
                 self.cells[x][y]["player"] = "CPU"
                 self.cells[x][y]["chess_piece"] = "ROOK"
                 self.labels[self.save_cell["x"]][self.save_cell["y"]].config(
@@ -366,7 +396,9 @@ class Chess():
                 print("3")
                 # if not any(self.cells[y][x]) or self.cells[y][x]["player"] == "CPU":
                 self.cells[self.save_cell["x"]
-                           ][self.save_cell["y"]]["chess_piece"] = "NONE"
+                           ][self.save_cell["y"]]["chess_piece"] = ""
+                self.cells[self.save_cell["x"]
+                           ][self.save_cell["y"]]["player"] = ""
                 self.cells[x][y]["player"] = "USER"
                 self.cells[x][y]["chess_piece"] = "ROOK"
                 self.labels[self.save_cell["x"]][self.save_cell["y"]].config(
@@ -381,7 +413,9 @@ class Chess():
                 print("2")
                 # if not any(self.cells[y][x]) or self.cells[x][y]["player"] == "USER":
                 self.cells[self.save_cell["x"]
-                           ][self.save_cell["y"]]["chess_piece"] = "NONE"
+                           ][self.save_cell["y"]]["chess_piece"] = ""
+                self.cells[self.save_cell["x"]
+                           ][self.save_cell["y"]]["player"] = ""
                 self.cells[x][y]["player"] = "CPU"
                 self.cells[x][y]["chess_piece"] = "KNIGHT"
                 self.labels[self.save_cell["x"]][self.save_cell["y"]].config(
@@ -395,7 +429,9 @@ class Chess():
                 print("3")
                 # if not any(self.cells[y][x]) or self.cells[y][x]["player"] == "CPU":
                 self.cells[self.save_cell["x"]
-                           ][self.save_cell["y"]]["chess_piece"] = "NONE"
+                           ][self.save_cell["y"]]["chess_piece"] = ""
+                self.cells[self.save_cell["x"]
+                           ][self.save_cell["y"]]["player"] = ""
                 self.cells[x][y]["player"] = "USER"
                 self.cells[x][y]["chess_piece"] = "KNIGHT"
                 self.labels[self.save_cell["x"]][self.save_cell["y"]].config(
@@ -410,7 +446,9 @@ class Chess():
                 print("2")
                 # if not any(self.cells[y][x]) or self.cells[x][y]["player"] == "USER":
                 self.cells[self.save_cell["x"]
-                           ][self.save_cell["y"]]["chess_piece"] = "NONE"
+                           ][self.save_cell["y"]]["chess_piece"] = ""
+                self.cells[self.save_cell["x"]
+                           ][self.save_cell["y"]]["player"] = ""
                 self.cells[x][y]["player"] = "CPU"
                 self.cells[x][y]["chess_piece"] = "BISHOP"
                 self.labels[self.save_cell["x"]][self.save_cell["y"]].config(
@@ -424,7 +462,9 @@ class Chess():
                 print("3")
                 # if not any(self.cells[y][x]) or self.cells[y][x]["player"] == "CPU":
                 self.cells[self.save_cell["x"]
-                           ][self.save_cell["y"]]["chess_piece"] = "NONE"
+                           ][self.save_cell["y"]]["chess_piece"] = ""
+                self.cells[self.save_cell["x"]
+                           ][self.save_cell["y"]]["player"] = ""
                 self.cells[x][y]["player"] = "USER"
                 self.cells[x][y]["chess_piece"] = "BISHOP"
                 self.labels[self.save_cell["x"]][self.save_cell["y"]].config(
@@ -440,7 +480,9 @@ class Chess():
                 print("2")
                 # if not any(self.cells[y][x]) or self.cells[x][y]["player"] == "USER":
                 self.cells[self.save_cell["x"]
-                           ][self.save_cell["y"]]["chess_piece"] = "NONE"
+                           ][self.save_cell["y"]]["chess_piece"] = ""
+                self.cells[self.save_cell["x"]
+                           ][self.save_cell["y"]]["player"] = ""
                 self.cells[x][y]["player"] = "CPU"
                 self.cells[x][y]["chess_piece"] = "KING"
                 self.labels[self.save_cell["x"]][self.save_cell["y"]].config(
@@ -454,7 +496,9 @@ class Chess():
                 print("3")
                 # if not any(self.cells[y][x]) or self.cells[y][x]["player"] == "CPU":
                 self.cells[self.save_cell["x"]
-                           ][self.save_cell["y"]]["chess_piece"] = "NONE"
+                           ][self.save_cell["y"]]["chess_piece"] = ""
+                self.cells[self.save_cell["x"]
+                           ][self.save_cell["y"]]["player"] = ""
                 self.cells[x][y]["player"] = "USER"
                 self.cells[x][y]["chess_piece"] = "KING"
                 self.labels[self.save_cell["x"]][self.save_cell["y"]].config(
@@ -469,7 +513,9 @@ class Chess():
                 print("2")
                 # if not any(self.cells[y][x]) or self.cells[x][y]["player"] == "USER":
                 self.cells[self.save_cell["x"]
-                           ][self.save_cell["y"]]["chess_piece"] = "NONE"
+                           ][self.save_cell["y"]]["chess_piece"] = ""
+                self.cells[self.save_cell["x"]
+                           ][self.save_cell["y"]]["player"] = ""
                 self.cells[x][y]["player"] = "CPU"
                 self.cells[x][y]["chess_piece"] = "QUEEN"
                 self.labels[self.save_cell["x"]][self.save_cell["y"]].config(
@@ -483,7 +529,9 @@ class Chess():
                 print("3")
                 # if not any(self.cells[y][x]) or self.cells[y][x]["player"] == "CPU":
                 self.cells[self.save_cell["x"]
-                           ][self.save_cell["y"]]["chess_piece"] = "NONE"
+                           ][self.save_cell["y"]]["chess_piece"] = ""
+                self.cells[self.save_cell["x"]
+                           ][self.save_cell["y"]]["player"] = ""
                 self.cells[x][y]["player"] = "USER"
                 self.cells[x][y]["chess_piece"] = "QUEEN"
                 self.labels[self.save_cell["x"]][self.save_cell["y"]].config(
@@ -662,13 +710,22 @@ class Chess():
                 if any(self.cells[i][j]):
                     print(self.cells[i][j]["chess_piece"], end=' ')
                 else:
-                    print("NONE", end=' ')
+                    print("", end=' ')
             print()
 
     def test_move_cells(self):
         for i in range(self.width):
             for j in range(self.height):
                 print(self.move_cells[i][j], end=' ')
+            print()
+
+    def test_player_cells(self):
+        for i in range(self.width):
+            for j in range(self.height):
+                if any(self.cells[i][j]):
+                    print(self.cells[i][j]["player"], end=' ')
+                else:
+                    print("", end=' ')
             print()
 
 
