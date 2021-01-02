@@ -165,8 +165,8 @@ class Chess():
 
         y = arg["y"]
         x = arg["x"]
-        print(y, x)
-        print(self.move_cells[y][x])
+        # print(y, x)
+        # print(self.move_cells[y][x])
 
         if any(self.cells[x][y]):
             name = self.cells[x][y]["chess_piece"]
@@ -215,48 +215,66 @@ class Chess():
             elif name == "ROOK":
                 for i in range(4):
                     for j in range(8):
-                        if (y - j) >= 0 and (y - j) < self.height or (y + j) >= 0 and (y + j) < self.height or (x - j) >= 0 and (x - j) < self.height or (x + j) >= 0 and (x + j) < self.height:
-                            if not self.cells[x][y - j]["player"] == "USER" or not self.cells[x][y + j]["player"] == "USER" or not self.cells[x - j][y]["player"] == "USER" or not self.cells[x + j][y]["player"] == "USER":
+                        print("i=",i,"j=",j,"y=", y, "x=", x, "y-j=", y-j, "x-j=", x-j)
+                        if i == 0 and not j == 0 and (y - j) >= 0 and (y - j) < self.height:
+                            if self.cells[x][y - j]["player"] == "CPU":
+                                print("break 0")
                                 break
-                            if i == 0:
-                                if not (y - j == y) and not self.cells[x][y-j]["player"] == "CPU":
-                                    self.move_cells[y - j][x] = True
-                            elif i == 1:
-                                if not (y + j == y) and not self.cells[x][y+j]["player"] == "CPU":
-                                    self.move_cells[y + j][x] = True
-                            elif i == 2:
-                                if not (x - j == x) and not self.cells[x-j][y]["player"] == "CPU":
-                                    self.move_cells[y][x - j] = True
-                            elif i == 3:
-                                if not (x + j == x) and not self.cells[x+j][y]["player"] == "CPU":
-                                    self.move_cells[y][x + j] = True
-                            else:
-                                continue
+                            elif not (y - j == y) and not self.cells[x][y - j]["player"] == "CPU":
+                                self.move_cells[y - j][x] = True
+                        elif i == 1 and not j == 0 and (y + j) >= 0 and (y + j) < self.height:
+                            if self.cells[x][y + j]["player"] == "CPU":
+                                print("break 1")
+                                break
+                            elif not (y + j == y) and not self.cells[x][y + j]["player"] == "CPU":
+                                self.move_cells[y + j][x] = True
+                        elif i == 2 and not j == 0 and (x - j) >= 0 and (x - j) < self.height:
+                            if self.cells[x - j][y]["player"] == "CPU":
+                                print("break 2")
+                                break
+                            elif not (x - j == x) and not self.cells[x - j][y]["player"] == "CPU":
+                                self.move_cells[y][x - j] = True
+                        elif i == 3 and not j == 0 and (x + j) >= 0 and (x + j) < self.height:
+                            if self.cells[x + j][y]["player"] == "CPU":
+                                print("break 3")
+                                break
+                            elif not (x + j == x) and not self.cells[x + j][y]["player"] == "CPU":
+                                self.move_cells[y][x + j] = True
+                        else:
+                            continue
 
             elif name == "KNIGHT":
                 if y - 2 >= 0 and x - 1 >= 0 and y - 2 < self.height and x - 1 < self.width:
-                    self.move_cells[y - 2][x - 1] = True
+                    if not self.cells[x-1][y-2]["player"] == "CPU":
+                        self.move_cells[y - 2][x - 1] = True
 
                 if y - 1 >= 0 and x - 2 >= 0 and y - 1 < self.height and x - 2 < self.width:
-                    self.move_cells[y - 1][x - 2] = True
+                    if not self.cells[x-2][y-1]["player"] == "CPU":
+                        self.move_cells[y - 1][x - 2] = True
 
                 if y - 2 >= 0 and x + 1 >= 0 and y - 2 < self.height and x + 1 < self.width:
-                    self.move_cells[y - 2][x + 1] = True
+                    if not self.cells[x+1][y-2]["player"] == "CPU":
+                        self.move_cells[y - 2][x + 1] = True
 
                 if y - 1 >= 0 and x + 2 >= 0 and y - 1 < self.height and x + 2 < self.width:
-                    self.move_cells[y - 1][x + 2] = True
+                    if not self.cells[x+2][y-1]["player"] == "CPU":
+                        self.move_cells[y - 1][x + 2] = True
 
                 if y + 1 >= 0 and x - 2 >= 0 and y + 1 < self.height and x - 2 < self.width:
-                    self.move_cells[y + 1][x - 2] = True
+                    if not self.cells[x-2][y+1]["player"] == "CPU":
+                        self.move_cells[y + 1][x - 2] = True
 
                 if y + 2 >= 0 and x - 1 >= 0 and y + 2 < self.height and x - 1 < self.width:
-                    self.move_cells[y + 2][x - 1] = True
-
-                if y + 1 >= 0 and x + 2 >= 0 and y + 1 < self.height and x + 2 < self.width:
-                    self.move_cells[y + 1][x + 2] = True
+                    if not self.cells[x-1][y+2]["player"]  == "CPU":
+                        self.move_cells[y + 2][x - 1] = True
 
                 if y + 2 >= 0 and x + 1 >= 0 and y + 2 < self.height and x + 1 < self.width:
-                    self.move_cells[y + 2][x + 1] = True
+                    if not self.cells[x+1][y+2]["player"] == "CPU":
+                        self.move_cells[y + 2][x + 1] = True
+
+                if y + 1 >= 0 and x + 2 >= 0 and y + 1 < self.height and x + 2 < self.width:
+                    if not self.cells[x+2][y+1]["player"]  == "CPU":
+                        self.move_cells[y + 1][x + 2] = True
 
             elif name == "BISHOP":
                 for i in range(4):
@@ -279,8 +297,9 @@ class Chess():
             elif name == "KING":
                 for i in range(-1, 2):
                     for j in range(-1, 2):
-                        if y+i >= 0 and x+j >= 0 and y+i < self.height and x+j < self.width and not(i == 0 and j == 0):
-                            self.move_cells[y+i][x+j] = True
+                        if y + i >= 0 and x + j >= 0 and y + i < self.height and x + j < self.width and not (i == 0 and j == 0):
+                            if not self.cells[x+j][y+i]["player"] == "CPU":
+                                self.move_cells[y+i][x+j] = True
 
             elif name == "QUEEN":
                 for i in range(8):
@@ -345,9 +364,9 @@ class Chess():
         print(name)
 
         if name == "PAWN":
-            print("1")
+
             if self.cells[self.save_cell["x"]][self.save_cell["y"]]["player"] == "CPU":
-                print("2")
+
                 # if not any(self.cells[y][x]) or self.cells[x][y]["player"] == "USER":
                 self.cells[self.save_cell["x"]
                            ][self.save_cell["y"]]["chess_piece"] = ""
@@ -363,7 +382,7 @@ class Chess():
                 )
 
             elif self.cells[self.save_cell["x"]][self.save_cell["y"]]["player"] == "USER":
-                print("3")
+
                 # if not any(self.cells[y][x]) or self.cells[y][x]["player"] == "CPU":
                 self.cells[self.save_cell["x"]
                            ][self.save_cell["y"]]["chess_piece"] = ""
@@ -378,9 +397,9 @@ class Chess():
                     text="PAWN"
                 )
         elif name == "ROOK":
-            print("1")
+
             if self.cells[self.save_cell["x"]][self.save_cell["y"]]["player"] == "CPU":
-                print("2")
+
                 # if not any(self.cells[y][x]) or self.cells[x][y]["player"] == "USER":
                 self.cells[self.save_cell["x"]
                            ][self.save_cell["y"]]["chess_piece"] = ""
@@ -411,9 +430,9 @@ class Chess():
                     text="ROOK"
                 )
         elif name == "KNIGHT":
-            print("1")
+
             if self.cells[self.save_cell["x"]][self.save_cell["y"]]["player"] == "CPU":
-                print("2")
+
                 # if not any(self.cells[y][x]) or self.cells[x][y]["player"] == "USER":
                 self.cells[self.save_cell["x"]
                            ][self.save_cell["y"]]["chess_piece"] = ""
@@ -429,7 +448,7 @@ class Chess():
                 )
 
             elif self.cells[self.save_cell["x"]][self.save_cell["y"]]["player"] == "USER":
-                print("3")
+
                 # if not any(self.cells[y][x]) or self.cells[y][x]["player"] == "CPU":
                 self.cells[self.save_cell["x"]
                            ][self.save_cell["y"]]["chess_piece"] = ""
@@ -444,9 +463,9 @@ class Chess():
                     text="KNIGHT"
                 )
         elif name == "BISHOP":
-            print("1")
+
             if self.cells[self.save_cell["x"]][self.save_cell["y"]]["player"] == "CPU":
-                print("2")
+
                 # if not any(self.cells[y][x]) or self.cells[x][y]["player"] == "USER":
                 self.cells[self.save_cell["x"]
                            ][self.save_cell["y"]]["chess_piece"] = ""
@@ -462,7 +481,7 @@ class Chess():
                 )
 
             elif self.cells[self.save_cell["x"]][self.save_cell["y"]]["player"] == "USER":
-                print("3")
+
                 # if not any(self.cells[y][x]) or self.cells[y][x]["player"] == "CPU":
                 self.cells[self.save_cell["x"]
                            ][self.save_cell["y"]]["chess_piece"] = ""
@@ -478,9 +497,9 @@ class Chess():
                 )
 
         elif name == "KING":
-            print("1")
+
             if self.cells[self.save_cell["x"]][self.save_cell["y"]]["player"] == "CPU":
-                print("2")
+
                 # if not any(self.cells[y][x]) or self.cells[x][y]["player"] == "USER":
                 self.cells[self.save_cell["x"]
                            ][self.save_cell["y"]]["chess_piece"] = ""
@@ -496,7 +515,7 @@ class Chess():
                 )
 
             elif self.cells[self.save_cell["x"]][self.save_cell["y"]]["player"] == "USER":
-                print("3")
+
                 # if not any(self.cells[y][x]) or self.cells[y][x]["player"] == "CPU":
                 self.cells[self.save_cell["x"]
                            ][self.save_cell["y"]]["chess_piece"] = ""
@@ -511,9 +530,9 @@ class Chess():
                     text="KING"
                 )
         elif name == "QUEEN":
-            print("1")
+
             if self.cells[self.save_cell["x"]][self.save_cell["y"]]["player"] == "CPU":
-                print("2")
+
                 # if not any(self.cells[y][x]) or self.cells[x][y]["player"] == "USER":
                 self.cells[self.save_cell["x"]
                            ][self.save_cell["y"]]["chess_piece"] = ""
@@ -529,7 +548,7 @@ class Chess():
                 )
 
             elif self.cells[self.save_cell["x"]][self.save_cell["y"]]["player"] == "USER":
-                print("3")
+
                 # if not any(self.cells[y][x]) or self.cells[y][x]["player"] == "CPU":
                 self.cells[self.save_cell["x"]
                            ][self.save_cell["y"]]["chess_piece"] = ""
@@ -734,5 +753,6 @@ class Chess():
 
 # プログラムの開始
 app = tk.Tk()
+app.title("Chess")
 game = Chess(app)
 app.mainloop()
