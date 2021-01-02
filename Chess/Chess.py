@@ -183,10 +183,10 @@ class Chess():
             if name == "PAWN":
                 if self.cells[x][y]["player"] == "CPU":
                     if (x + 1) >= 0 and (x + 1) < self.height and not self.cells[x+1][y]["player"] == "USER":
-                        if x == 1:
+                        if x == 1 and not self.cells[x+2][y]["player"] == "USER" and not self.cells[x+2][y]["player"] == "CPU":
                             self.move_cells[y][x + 1] = True
                             self.move_cells[y][x + 2] = True
-                        else:
+                        elif not self.cells[x+1][y]["player"] == "CPU":
                             self.move_cells[y][x + 1] = True
 
                     if (x + 1) >= 0 and (y - 1) >= 0 and (x + 1) < self.height and (y - 1) < self.width:
@@ -199,10 +199,10 @@ class Chess():
 
                 elif self.cells[x][y]["player"] == "USER":
                     if (x - 1) >= 0 and (x - 1) < self.height and not self.cells[x-1][y]["player"] == "CPU":
-                        if x == 6:
+                        if x == 6 and not self.cells[x-2][y]["player"] == "CPU" and not self.cells[x-2][y]["player"] == "USER":
                             self.move_cells[y][x - 1] = True
                             self.move_cells[y][x - 2] = True
-                        else:
+                        elif not self.cells[x-1][y]["player"] == "USER":
                             self.move_cells[y][x - 1] = True
 
                     if (x - 1) >= 0 and (y - 1) >= 0 and (x - 1) < self.height and (y - 1) < self.width:
@@ -398,7 +398,6 @@ class Chess():
                             if y + i >= 0 and x + j >= 0 and y + i < self.height and x + j < self.width and not (i == 0 and j == 0):
                                 if not self.cells[x+j][y+i]["player"] == "USER":
                                     self.move_cells[y + i][x + j] = True
-
 
             elif name == "QUEEN":
                 for i in range(8):
