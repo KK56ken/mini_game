@@ -18,15 +18,16 @@ class Chess():
     # コンストラクタ
     def __init__(self, app):
         self.app = app
-
+        # 今、コマのいる位置を保存しておくリスト
         self.cells = None
+        # 移動できるところを保存しておくリスト
         self.move_cells = None
-
+        # 一つ前に押したところを保存しておく連想配列
         self.save_cell = None
 
         self.height = HEIGHT
         self.width = WIDTH
-
+        # プレイヤー
         self.player = None
 
         self.user_name = None
@@ -161,12 +162,245 @@ class Chess():
                 else:
                     self.cells[i][j] = null_dict.copy()
 
+    def is_pawn_move(self, player, x, y):
+        if player == "CPU":
+            reverse_player = "USER"
+            one = 1
+            two = 2
+            row = 1
+
+        elif player == "USER":
+            reverse_player = "CPU"
+            one = -1
+            two = -2
+            row = 6
+
+        if (x + one) >= 0 and (x + one) < self.height and not self.cells[x + one][y]["player"] == reverse_player:
+            if x == row and not self.cells[x + two][y]["player"] == reverse_player and not self.cells[x + two][y]["player"] == player:
+                self.move_cells[y][x + one] = True
+                self.move_cells[y][x + two] = True
+            elif not self.cells[x + one][y]["player"] == player:
+                self.move_cells[y][x + one] = True
+
+        if (x + one) >= 0 and (y - 1) >= 0 and (x + one) < self.height and (y - 1) < self.width:
+            if self.cells[x + one][y - 1]["player"] == reverse_player:
+                self.move_cells[y - 1][x + one] = True
+
+        if (x + one) >= 0 and (y + 1) >= 0 and (x + one) < self.height and (y + 1) < self.width:
+            if self.cells[x + one][y + 1]["player"] == reverse_player:
+                self.move_cells[y + 1][x + one] = True
+
+    def is_rook_move(self, player, x, y):
+
+        if player == "CPU":
+            reverse_player = "USER"
+        elif player == "USER":
+            reverse_player = "CPU"
+
+        for i in range(4):
+            for j in range(8):
+                if i == 0 and not j == 0 and (y - j) >= 0 and (y - j) < self.height:
+                    if self.cells[x][y - j]["player"] == player:
+                        break
+                    elif self.cells[x][y - j]["player"] == reverse_player:
+                        self.move_cells[y - j][x] = True
+                        break
+                    elif not (y - j == y) and not self.cells[x][y - j]["player"] == player:
+                        self.move_cells[y - j][x] = True
+                elif i == 1 and not j == 0 and (y + j) >= 0 and (y + j) < self.height:
+                    if self.cells[x][y + j]["player"] == player:
+                        break
+                    elif self.cells[x][y + j]["player"] == reverse_player:
+                        self.move_cells[y + j][x] = True
+                        break
+                    elif not (y + j == y) and not self.cells[x][y + j]["player"] == player:
+                        self.move_cells[y + j][x] = True
+                elif i == 2 and not j == 0 and (x - j) >= 0 and (x - j) < self.height:
+                    if self.cells[x - j][y]["player"] == player:
+                        break
+                    elif self.cells[x - j][y]["player"] == reverse_player:
+                        self.move_cells[y][x - j] = True
+                        break
+                    elif not (x - j == x) and not self.cells[x - j][y]["player"] == player:
+                        self.move_cells[y][x - j] = True
+                elif i == 3 and not j == 0 and (x + j) >= 0 and (x + j) < self.height:
+                    if self.cells[x + j][y]["player"] == player:
+                        break
+                    elif self.cells[x + j][y]["player"] == reverse_player:
+                        self.move_cells[y][x + j] = True
+                        break
+                    elif not (x + j == x) and not self.cells[x + j][y]["player"] == player:
+                        self.move_cells[y][x + j] = True
+                else:
+                    continue
+
+    def is_knight_move(self, player, x, y):
+        if y - 2 >= 0 and x - 1 >= 0 and y - 2 < self.height and x - 1 < self.width:
+            if not self.cells[x-1][y-2]["player"] == player:
+                self.move_cells[y - 2][x - 1] = True
+
+        if y - 1 >= 0 and x - 2 >= 0 and y - 1 < self.height and x - 2 < self.width:
+            if not self.cells[x-2][y-1]["player"] == player:
+                self.move_cells[y - 1][x - 2] = True
+
+        if y - 2 >= 0 and x + 1 >= 0 and y - 2 < self.height and x + 1 < self.width:
+            if not self.cells[x+1][y-2]["player"] == player:
+                self.move_cells[y - 2][x + 1] = True
+
+        if y - 1 >= 0 and x + 2 >= 0 and y - 1 < self.height and x + 2 < self.width:
+            if not self.cells[x+2][y-1]["player"] == player:
+                self.move_cells[y - 1][x + 2] = True
+
+        if y + 1 >= 0 and x - 2 >= 0 and y + 1 < self.height and x - 2 < self.width:
+            if not self.cells[x-2][y+1]["player"] == player:
+                self.move_cells[y + 1][x - 2] = True
+
+        if y + 2 >= 0 and x - 1 >= 0 and y + 2 < self.height and x - 1 < self.width:
+            if not self.cells[x-1][y+2]["player"] == player:
+                self.move_cells[y + 2][x - 1] = True
+
+        if y + 2 >= 0 and x + 1 >= 0 and y + 2 < self.height and x + 1 < self.width:
+            if not self.cells[x+1][y+2]["player"] == player:
+                self.move_cells[y + 2][x + 1] = True
+
+        if y + 1 >= 0 and x + 2 >= 0 and y + 1 < self.height and x + 2 < self.width:
+            if not self.cells[x+2][y+1]["player"] == player:
+                self.move_cells[y + 1][x + 2] = True
+
+    def is_bishop_move(self, player, x, y):
+        if player == "CPU":
+            reverse_player = "USER"
+        elif player == "USER":
+            reverse_player = "CPU"
+
+        for i in range(4):
+            for j in range(8):
+                if i == 0 and not j == 0 and y - j >= 0 and x - j >= 0 and y - j < self.height and x - j < self.width:
+                    if self.cells[x - j][y - j]["player"] == player:
+                        break
+                    elif self.cells[x - j][y - j]["player"] == reverse_player:
+                        self.move_cells[y - j][x - j] = True
+                        break
+                    elif not (y - j == y and x - j == x) and not self.cells[x - j][y - j]["player"] == player:
+                        self.move_cells[y - j][x - j] = True
+                elif i == 1 and not j == 0 and y - j >= 0 and x + j >= 0 and y - j < self.height and x + j < self.width:
+                    if self.cells[x + j][y - j]["player"] == player:
+                        break
+                    elif self.cells[x + j][y - j]["player"] == reverse_player:
+                        self.move_cells[y - j][x + j] = True
+                        break
+                    elif not (y - j == y and x + j == x) and not self.cells[x + j][y - j]["player"] == player:
+                        self.move_cells[y - j][x + j] = True
+
+                elif i == 2 and not j == 0 and y + j >= 0 and x - j >= 0 and y + j < self.height and x - j < self.width:
+                    if self.cells[x - j][y + j]["player"] == player:
+                        break
+                    elif self.cells[x - j][y + j]["player"] == reverse_player:
+                        self.move_cells[y + j][x - j] = True
+                        break
+                    elif not (y + j == y and x - j == x) and not self.cells[x - j][y + j]["player"] == player:
+                        self.move_cells[y + j][x - j] = True
+
+                elif i == 3 and not j == 0 and y + j >= 0 and x + j >= 0 and y + j < self.height and x + j < self.width:
+                    if self.cells[x + j][y + j]["player"] == player:
+                        break
+                    elif self.cells[x + j][y + j]["player"] == reverse_player:
+                        self.move_cells[y + j][x + j] = True
+                        break
+                    elif not (y + j == y and x + j == x) and not self.cells[x + j][y + j]["player"] == player:
+                        self.move_cells[y + j][x + j] = True
+                else:
+                    continue
+
+    def is_king_move(self, player, x, y):
+        for i in range(-1, 2):
+            for j in range(-1, 2):
+                if y + i >= 0 and x + j >= 0 and y + i < self.height and x + j < self.width and not (i == 0 and j == 0):
+                    if not self.cells[x+j][y+i]["player"] == player:
+                        self.move_cells[y + i][x + j] = True
+
+    def is_queen_move(self, player, x, y):
+        if player == "CPU":
+            reverse_player = "USER"
+
+        elif player == "USER":
+            reverse_player = "CPU"
+
+        for i in range(8):
+            for j in range(8):
+                if i == 0 and not j == 0 and y - j >= 0 and x - j >= 0 and y - j < self.height and x - j < self.width:
+                    if self.cells[x - j][y - j]["player"] == player:
+                        break
+                    elif self.cells[x - j][y - j]["player"] == reverse_player:
+                        self.move_cells[y - j][x - j] = True
+                        break
+                    elif not (y - j == y and x - j == x) and not self.cells[x - j][y - j]["player"] == player:
+                        self.move_cells[y - j][x - j] = True
+                elif i == 1 and not j == 0 and y - j >= 0 and x + j >= 0 and y - j < self.height and x + j < self.width:
+                    if self.cells[x + j][y - j]["player"] == player:
+                        break
+                    elif self.cells[x + j][y - j]["player"] == reverse_player:
+                        self.move_cells[y - j][x + j] = True
+                        break
+                    elif not (y - j == y and x + j == x) and not self.cells[x + j][y - j]["player"] == player:
+                        self.move_cells[y - j][x + j] = True
+                elif i == 2 and not j == 0 and y + j >= 0 and x - j >= 0 and y + j < self.height and x - j < self.width:
+                    if self.cells[x - j][y + j]["player"] == player:
+                        break
+                    elif self.cells[x - j][y + j]["player"] == reverse_player:
+                        self.move_cells[y + j][x - j] = True
+                        break
+                    elif not (y + j == y and x - j == x) and not self.cells[x - j][y + j]["player"] == player:
+                        self.move_cells[y + j][x - j] = True
+                elif i == 3 and not j == 0 and y + j >= 0 and x + j >= 0 and y + j < self.height and x + j < self.width:
+                    if self.cells[x + j][y + j]["player"] == player:
+                        break
+                    elif self.cells[x + j][y + j]["player"] == reverse_player:
+                        self.move_cells[y + j][x + j] = True
+                        break
+                    elif not (y + j == y and x + j == x) and not self.cells[x + j][y + j]["player"] == player:
+                        self.move_cells[y + j][x + j] = True
+                elif i == 4 and not j == 0 and (y - j) >= 0 and (y - j) < self.height:
+                    if self.cells[x][y - j]["player"] == player:
+                        break
+                    elif self.cells[x][y - j]["player"] == reverse_player:
+                        self.move_cells[y - j][x] = True
+                        break
+                    elif not (y - j == y) and not self.cells[x][y - j]["player"] == player:
+                        self.move_cells[y - j][x] = True
+                elif i == 5 and not j == 0 and (y + j) >= 0 and (y + j) < self.height:
+                    if self.cells[x][y + j]["player"] == player:
+                        break
+                    elif self.cells[x][y + j]["player"] == reverse_player:
+                        self.move_cells[y + j][x] = True
+                        break
+                    elif not (y + j == y) and not self.cells[x][y + j]["player"] == player:
+                        self.move_cells[y + j][x] = True
+                elif i == 6 and not j == 0 and (x - j) >= 0 and (x - j) < self.width:
+                    if self.cells[x - j][y]["player"] == player:
+                        break
+                    elif self.cells[x - j][y]["player"] == reverse_player:
+                        self.move_cells[y][x - j] = True
+                        break
+                    elif not (x - j == x) and not self.cells[x - j][y]["player"] == player:
+                        self.move_cells[y][x - j] = True
+                elif i == 7 and not j == 0 and (x + j) >= 0 and (x + j) < self.width:
+                    if self.cells[x + j][y]["player"] == player:
+                        break
+                    elif self.cells[x + j][y]["player"] == reverse_player:
+                        self.move_cells[y][x + j] = True
+                        break
+                    elif not (x + j == x) and not self.cells[x + j][y]["player"] == player:
+                        self.move_cells[y][x + j] = True
+                else:
+                    continue
+
     def is_move(self, event, arg):
 
         y = arg["y"]
         x = arg["x"]
-        # print(y, x)
-        # print(self.move_cells[y][x])
+
+        player = self.cells[x][y]["player"]
 
         if any(self.cells[x][y]):
             name = self.cells[x][y]["chess_piece"]
@@ -177,412 +411,27 @@ class Chess():
             name = self.cells[self.save_cell["x"]
                               ][self.save_cell["y"]]["chess_piece"]
             self.move(name, y, x)
+
         else:
             self.init_move_cells()
 
             if name == "PAWN":
-                if self.cells[x][y]["player"] == "CPU":
-                    if (x + 1) >= 0 and (x + 1) < self.height and not self.cells[x+1][y]["player"] == "USER":
-                        if x == 1 and not self.cells[x+2][y]["player"] == "USER" and not self.cells[x+2][y]["player"] == "CPU":
-                            self.move_cells[y][x + 1] = True
-                            self.move_cells[y][x + 2] = True
-                        elif not self.cells[x+1][y]["player"] == "CPU":
-                            self.move_cells[y][x + 1] = True
-
-                    if (x + 1) >= 0 and (y - 1) >= 0 and (x + 1) < self.height and (y - 1) < self.width:
-                        if self.cells[x + 1][y - 1]["player"] == "USER":
-                            self.move_cells[y - 1][x + 1] = True
-
-                    if (x + 1) >= 0 and (y + 1) >= 0 and (x + 1) < self.height and (y + 1) < self.width:
-                        if self.cells[x + 1][y + 1]["player"] == "USER":
-                            self.move_cells[y + 1][x + 1] = True
-
-                elif self.cells[x][y]["player"] == "USER":
-                    if (x - 1) >= 0 and (x - 1) < self.height and not self.cells[x-1][y]["player"] == "CPU":
-                        if x == 6 and not self.cells[x-2][y]["player"] == "CPU" and not self.cells[x-2][y]["player"] == "USER":
-                            self.move_cells[y][x - 1] = True
-                            self.move_cells[y][x - 2] = True
-                        elif not self.cells[x-1][y]["player"] == "USER":
-                            self.move_cells[y][x - 1] = True
-
-                    if (x - 1) >= 0 and (y - 1) >= 0 and (x - 1) < self.height and (y - 1) < self.width:
-                        if self.cells[x - 1][y - 1]["player"] == "CPU":
-                            self.move_cells[y - 1][x - 1] = True
-                    if (x - 1) >= 0 and (y + 1) >= 0 and (x - 1) < self.height and (y + 1) < self.width:
-                        if self.cells[x - 1][y + 1]["player"] == "CPU":
-                            self.move_cells[y + 1][x - 1] = True
+                self.is_pawn_move(player, x, y)
 
             elif name == "ROOK":
-                for i in range(4):
-                    for j in range(8):
-                        # print("i=", i, "j=", j, "y=", y, "x=",
-                        #       x, "y-j=", y-j, "x-j=", x-j)
-                        if self.cells[x][y]["player"] == "CPU":
-                            if i == 0 and not j == 0 and (y - j) >= 0 and (y - j) < self.height:
-                                if self.cells[x][y - j]["player"] == "CPU":
-                                    break
-                                elif self.cells[x][y - j]["player"] == "USER":
-                                    self.move_cells[y - j][x] = True
-                                    break
-                                elif not (y - j == y) and not self.cells[x][y - j]["player"] == "CPU":
-                                    self.move_cells[y - j][x] = True
-                            elif i == 1 and not j == 0 and (y + j) >= 0 and (y + j) < self.height:
-                                if self.cells[x][y + j]["player"] == "CPU":
-                                    break
-                                elif self.cells[x][y + j]["player"] == "USER":
-                                    self.move_cells[y + j][x] = True
-                                    break
-                                elif not (y + j == y) and not self.cells[x][y + j]["player"] == "CPU":
-                                    self.move_cells[y + j][x] = True
-                            elif i == 2 and not j == 0 and (x - j) >= 0 and (x - j) < self.height:
-                                if self.cells[x - j][y]["player"] == "CPU":
-                                    break
-                                elif self.cells[x - j][y]["player"] == "USER":
-                                    self.move_cells[y][x - j] = True
-                                    break
-                                elif not (x - j == x) and not self.cells[x - j][y]["player"] == "CPU":
-                                    self.move_cells[y][x - j] = True
-                            elif i == 3 and not j == 0 and (x + j) >= 0 and (x + j) < self.height:
-                                if self.cells[x + j][y]["player"] == "CPU":
-                                    break
-                                elif self.cells[x + j][y]["player"] == "USER":
-                                    self.move_cells[y][x + j] = True
-                                    break
-                                elif not (x + j == x) and not self.cells[x + j][y]["player"] == "CPU":
-                                    self.move_cells[y][x + j] = True
-                            else:
-                                continue
-                        elif self.cells[x][y]["player"] == "USER":
-                            if i == 0 and not j == 0 and (y - j) >= 0 and (y - j) < self.height:
-                                if self.cells[x][y - j]["player"] == "USER":
-                                    break
-                                elif self.cells[x][y - j]["player"] == "CPU":
-                                    self.move_cells[y - j][x] = True
-                                    break
-                                elif not (y - j == y) and not self.cells[x][y - j]["player"] == "USER":
-                                    self.move_cells[y - j][x] = True
-                            elif i == 1 and not j == 0 and (y + j) >= 0 and (y + j) < self.height:
-                                if self.cells[x][y + j]["player"] == "USER":
-                                    break
-                                elif self.cells[x][y + j]["player"] == "CPU":
-                                    self.move_cells[y + j][x] = True
-                                    break
-                                elif not (y + j == y) and not self.cells[x][y + j]["player"] == "USER":
-                                    self.move_cells[y + j][x] = True
-                            elif i == 2 and not j == 0 and (x - j) >= 0 and (x - j) < self.height:
-                                if self.cells[x - j][y]["player"] == "USER":
-                                    break
-                                elif self.cells[x - j][y]["player"] == "CPU":
-                                    self.move_cells[y][x - j] = True
-                                    break
-                                elif not (x - j == x) and not self.cells[x - j][y]["player"] == "USER":
-                                    self.move_cells[y][x - j] = True
-                            elif i == 3 and not j == 0 and (x + j) >= 0 and (x + j) < self.height:
-                                if self.cells[x + j][y]["player"] == "USER":
-                                    break
-                                elif self.cells[x + j][y]["player"] == "CPU":
-                                    self.move_cells[y][x + j] = True
-                                    break
-                                elif not (x + j == x) and not self.cells[x + j][y]["player"] == "USER":
-                                    self.move_cells[y][x + j] = True
-                            else:
-                                continue
+                self.is_rook_move(player, x, y)
 
             elif name == "KNIGHT":
-                if self.cells[x][y]["player"] == "CPU":
-                    if y - 2 >= 0 and x - 1 >= 0 and y - 2 < self.height and x - 1 < self.width:
-                        if not self.cells[x-1][y-2]["player"] == "CPU":
-                            self.move_cells[y - 2][x - 1] = True
-
-                    if y - 1 >= 0 and x - 2 >= 0 and y - 1 < self.height and x - 2 < self.width:
-                        if not self.cells[x-2][y-1]["player"] == "CPU":
-                            self.move_cells[y - 1][x - 2] = True
-
-                    if y - 2 >= 0 and x + 1 >= 0 and y - 2 < self.height and x + 1 < self.width:
-                        if not self.cells[x+1][y-2]["player"] == "CPU":
-                            self.move_cells[y - 2][x + 1] = True
-
-                    if y - 1 >= 0 and x + 2 >= 0 and y - 1 < self.height and x + 2 < self.width:
-                        if not self.cells[x+2][y-1]["player"] == "CPU":
-                            self.move_cells[y - 1][x + 2] = True
-
-                    if y + 1 >= 0 and x - 2 >= 0 and y + 1 < self.height and x - 2 < self.width:
-                        if not self.cells[x-2][y+1]["player"] == "CPU":
-                            self.move_cells[y + 1][x - 2] = True
-
-                    if y + 2 >= 0 and x - 1 >= 0 and y + 2 < self.height and x - 1 < self.width:
-                        if not self.cells[x-1][y+2]["player"] == "CPU":
-                            self.move_cells[y + 2][x - 1] = True
-
-                    if y + 2 >= 0 and x + 1 >= 0 and y + 2 < self.height and x + 1 < self.width:
-                        if not self.cells[x+1][y+2]["player"] == "CPU":
-                            self.move_cells[y + 2][x + 1] = True
-
-                    if y + 1 >= 0 and x + 2 >= 0 and y + 1 < self.height and x + 2 < self.width:
-                        if not self.cells[x+2][y+1]["player"] == "CPU":
-                            self.move_cells[y + 1][x + 2] = True
-
-                elif self.cells[x][y]["player"] == "USER":
-                    if y - 2 >= 0 and x - 1 >= 0 and y - 2 < self.height and x - 1 < self.width:
-                        if not self.cells[x-1][y-2]["player"] == "USER":
-                            self.move_cells[y - 2][x - 1] = True
-
-                    if y - 1 >= 0 and x - 2 >= 0 and y - 1 < self.height and x - 2 < self.width:
-                        if not self.cells[x-2][y-1]["player"] == "USER":
-                            self.move_cells[y - 1][x - 2] = True
-
-                    if y - 2 >= 0 and x + 1 >= 0 and y - 2 < self.height and x + 1 < self.width:
-                        if not self.cells[x+1][y-2]["player"] == "USER":
-                            self.move_cells[y - 2][x + 1] = True
-
-                    if y - 1 >= 0 and x + 2 >= 0 and y - 1 < self.height and x + 2 < self.width:
-                        if not self.cells[x+2][y-1]["player"] == "USER":
-                            self.move_cells[y - 1][x + 2] = True
-
-                    if y + 1 >= 0 and x - 2 >= 0 and y + 1 < self.height and x - 2 < self.width:
-                        if not self.cells[x-2][y+1]["player"] == "USER":
-                            self.move_cells[y + 1][x - 2] = True
-
-                    if y + 2 >= 0 and x - 1 >= 0 and y + 2 < self.height and x - 1 < self.width:
-                        if not self.cells[x-1][y+2]["player"] == "USER":
-                            self.move_cells[y + 2][x - 1] = True
-
-                    if y + 2 >= 0 and x + 1 >= 0 and y + 2 < self.height and x + 1 < self.width:
-                        if not self.cells[x+1][y+2]["player"] == "USER":
-                            self.move_cells[y + 2][x + 1] = True
-
-                    if y + 1 >= 0 and x + 2 >= 0 and y + 1 < self.height and x + 2 < self.width:
-                        if not self.cells[x+2][y+1]["player"] == "USER":
-                            self.move_cells[y + 1][x + 2] = True
+                self.is_knight_move(player, x, y)
 
             elif name == "BISHOP":
-                for i in range(4):
-                    for j in range(8):
-                        if self.cells[x][y]["player"] == "CPU":
-                            if i == 0 and not j == 0 and y - j >= 0 and x - j >= 0 and y - j < self.height and x - j < self.width:
-                                if self.cells[x - j][y - j]["player"] == "CPU":
-                                    break
-                                elif self.cells[x - j][y - j]["player"] == "USER":
-                                    self.move_cells[y - j][x - j] = True
-                                    break
-                                elif not (y - j == y and x - j == x) and not self.cells[x - j][y - j]["player"] == "CPU":
-                                    self.move_cells[y - j][x - j] = True
-                            elif i == 1 and not j == 0 and y - j >= 0 and x + j >= 0 and y - j < self.height and x + j < self.width:
-                                if self.cells[x + j][y - j]["player"] == "CPU":
-                                    break
-                                elif self.cells[x + j][y - j]["player"] == "USER":
-                                    self.move_cells[y - j][x + j] = True
-                                    break
-                                elif not (y - j == y and x + j == x) and not self.cells[x + j][y - j]["player"] == "CPU":
-                                    self.move_cells[y - j][x + j] = True
-
-                            elif i == 2 and not j == 0 and y + j >= 0 and x - j >= 0 and y + j < self.height and x - j < self.width:
-                                if self.cells[x - j][y + j]["player"] == "CPU":
-                                    break
-                                elif self.cells[x - j][y + j]["player"] == "USER":
-                                    self.move_cells[y + j][x - j] = True
-                                    break
-                                elif not (y + j == y and x - j == x) and not self.cells[x - j][y + j]["player"] == "CPU":
-                                    self.move_cells[y + j][x - j] = True
-
-                            elif i == 3 and not j == 0 and y + j >= 0 and x + j >= 0 and y + j < self.height and x + j < self.width:
-                                if self.cells[x + j][y + j]["player"] == "CPU":
-                                    break
-                                elif self.cells[x + j][y + j]["player"] == "USER":
-                                    self.move_cells[y + j][x + j] = True
-                                    break
-                                elif not (y + j == y and x + j == x) and not self.cells[x + j][y + j]["player"] == "CPU":
-                                    self.move_cells[y + j][x + j] = True
-                            else:
-                                continue
-                        elif self.cells[x][y]["player"] == "USER":
-                            if i == 0 and not j == 0 and y - j >= 0 and x - j >= 0 and y - j < self.height and x - j < self.width:
-                                if self.cells[x - j][y - j]["player"] == "USER":
-                                    break
-                                elif self.cells[x - j][y - j]["player"] == "CPU":
-                                    self.move_cells[y - j][x - j] = True
-                                    break
-                                elif not (y - j == y and x - j == x) and not self.cells[x - j][y - j]["player"] == "USER":
-                                    self.move_cells[y - j][x - j] = True
-
-                            elif i == 1 and not j == 0 and y - j >= 0 and x + j >= 0 and y - j < self.height and x + j < self.width:
-                                if self.cells[x + j][y - j]["player"] == "USER":
-                                    break
-                                elif self.cells[x + j][y - j]["player"] == "CPU":
-                                    self.move_cells[y - j][x + j] = True
-                                    break
-                                elif not (y - j == y and x + j == x) and not self.cells[x + j][y - j]["player"] == "USER":
-                                    self.move_cells[y - j][x + j] = True
-
-                            elif i == 2 and not j == 0 and y + j >= 0 and x - j >= 0 and y + j < self.height and x - j < self.width:
-                                if self.cells[x - j][y + j]["player"] == "USER":
-                                    break
-                                elif self.cells[x - j][y + j]["player"] == "CPU":
-                                    self.move_cells[y + j][x - j] = True
-                                    break
-                                elif not (y + j == y and x - j == x) and not self.cells[x - j][y + j]["player"] == "USER":
-                                    self.move_cells[y + j][x - j] = True
-
-                            elif i == 3 and not j == 0 and y + j >= 0 and x + j >= 0 and y + j < self.height and x + j < self.width:
-                                if self.cells[x + j][y + j]["player"] == "USER":
-                                    break
-                                elif self.cells[x + j][y + j]["player"] == "CPU":
-                                    self.move_cells[y + j][x + j] = True
-                                    break
-                                elif not (y + j == y and x + j == x) and not self.cells[x + j][y + j]["player"] == "USER":
-                                    self.move_cells[y + j][x + j] = True
-                            else:
-                                continue
+                self.is_bishop_move(player, x, y)
 
             elif name == "KING":
-                for i in range(-1, 2):
-                    for j in range(-1, 2):
-                        if self.cells[x][y]["player"] == "CPU":
-                            if y + i >= 0 and x + j >= 0 and y + i < self.height and x + j < self.width and not (i == 0 and j == 0):
-                                if not self.cells[x+j][y+i]["player"] == "CPU":
-                                    self.move_cells[y + i][x + j] = True
-                        elif self.cells[x][y]["player"] == "USER":
-                            if y + i >= 0 and x + j >= 0 and y + i < self.height and x + j < self.width and not (i == 0 and j == 0):
-                                if not self.cells[x+j][y+i]["player"] == "USER":
-                                    self.move_cells[y + i][x + j] = True
+                self.is_king_move(player, x, y)
 
             elif name == "QUEEN":
-                for i in range(8):
-                    for j in range(8):
-                        if self.cells[x][y]["player"] == "CPU":
-                            if i == 0 and not j == 0 and y - j >= 0 and x - j >= 0 and y - j < self.height and x - j < self.width:
-                                if self.cells[x - j][y - j]["player"] == "CPU":
-                                    break
-                                elif self.cells[x - j][y - j]["player"] == "USER":
-                                    self.move_cells[y - j][x - j] = True
-                                    break
-                                elif not (y - j == y and x - j == x) and not self.cells[x - j][y - j]["player"] == "CPU":
-                                    self.move_cells[y - j][x - j] = True
-                            elif i == 1 and not j == 0 and y - j >= 0 and x + j >= 0 and y - j < self.height and x + j < self.width:
-                                if self.cells[x + j][y - j]["player"] == "CPU":
-                                    break
-                                elif self.cells[x + j][y - j]["player"] == "USER":
-                                    self.move_cells[y - j][x + j] = True
-                                    break
-                                elif not (y - j == y and x + j == x) and not self.cells[x + j][y - j]["player"] == "CPU":
-                                    self.move_cells[y - j][x + j] = True
-                            elif i == 2 and not j == 0 and y + j >= 0 and x - j >= 0 and y + j < self.height and x - j < self.width:
-                                if self.cells[x - j][y + j]["player"] == "CPU":
-                                    break
-                                elif self.cells[x - j][y + j]["player"] == "USER":
-                                    self.move_cells[y + j][x - j] = True
-                                    break
-                                elif not (y + j == y and x - j == x) and not self.cells[x - j][y + j]["player"] == "CPU":
-                                    self.move_cells[y + j][x - j] = True
-                            elif i == 3 and not j == 0 and y + j >= 0 and x + j >= 0 and y + j < self.height and x + j < self.width:
-                                if self.cells[x + j][y + j]["player"] == "CPU":
-                                    break
-                                elif self.cells[x + j][y + j]["player"] == "USER":
-                                    self.move_cells[y + j][x + j] = True
-                                    break
-                                elif not (y + j == y and x + j == x) and not self.cells[x + j][y + j]["player"] == "CPU":
-                                    self.move_cells[y + j][x + j] = True
-                            elif i == 4 and not j == 0 and (y - j) >= 0 and (y - j) < self.height:
-                                if self.cells[x][y - j]["player"] == "CPU":
-                                    break
-                                elif self.cells[x][y - j]["player"] == "USER":
-                                    self.move_cells[y - j][x] = True
-                                    break
-                                elif not (y - j == y) and not self.cells[x][y - j]["player"] == "CPU":
-                                    self.move_cells[y - j][x] = True
-                            elif i == 5 and not j == 0 and (y + j) >= 0 and (y + j) < self.height:
-                                if self.cells[x][y + j]["player"] == "CPU":
-                                    break
-                                elif self.cells[x][y + j]["player"] == "USER":
-                                    self.move_cells[y + j][x] = True
-                                    break
-                                elif not (y + j == y) and not self.cells[x][y + j]["player"] == "CPU":
-                                    self.move_cells[y + j][x] = True
-                            elif i == 6 and not j == 0 and (x - j) >= 0 and (x - j) < self.width:
-                                if self.cells[x - j][y]["player"] == "CPU":
-                                    break
-                                elif self.cells[x - j][y]["player"] == "USER":
-                                    self.move_cells[y][x - j] = True
-                                    break
-                                elif not (x - j == x) and not self.cells[x - j][y]["player"] == "CPU":
-                                    self.move_cells[y][x - j] = True
-                            elif i == 7 and not j == 0 and (x + j) >= 0 and (x + j) < self.width:
-                                if self.cells[x + j][y]["player"] == "CPU":
-                                    break
-                                elif self.cells[x + j][y]["player"] == "USER":
-                                    self.move_cells[y][x + j] = True
-                                    break
-                                elif not (x + j == x) and not self.cells[x + j][y]["player"] == "CPU":
-                                    self.move_cells[y][x + j] = True
-                            else:
-                                continue
-                        elif self.cells[x][y]["player"] == "USER":
-                            if i == 0 and not j == 0 and y - j >= 0 and x - j >= 0 and y - j < self.height and x - j < self.width:
-                                if self.cells[x - j][y - j]["player"] == "USER":
-                                    break
-                                elif self.cells[x - j][y - j]["player"] == "CPU":
-                                    self.move_cells[y - j][x - j] = True
-                                    break
-                                elif not (y - j == y and x - j == x) and not self.cells[x - j][y - j]["player"] == "USER":
-                                    self.move_cells[y - j][x - j] = True
-                            elif i == 1 and not j == 0 and y - j >= 0 and x + j >= 0 and y - j < self.height and x + j < self.width:
-                                if self.cells[x + j][y - j]["player"] == "USER":
-                                    break
-                                elif self.cells[x + j][y - j]["player"] == "CPU":
-                                    self.move_cells[y - j][x + j] = True
-                                    break
-                                elif not (y - j == y and x + j == x) and not self.cells[x + j][y - j]["player"] == "USER":
-                                    self.move_cells[y - j][x + j] = True
-                            elif i == 2 and not j == 0 and y + j >= 0 and x - j >= 0 and y + j < self.height and x - j < self.width:
-                                if self.cells[x - j][y + j]["player"] == "USER":
-                                    break
-                                elif self.cells[x - j][y + j]["player"] == "CPU":
-                                    self.move_cells[y + j][x - j] = True
-                                    break
-                                elif not (y + j == y and x - j == x) and not self.cells[x - j][y + j]["player"] == "USER":
-                                    self.move_cells[y + j][x - j] = True
-                            elif i == 3 and not j == 0 and y + j >= 0 and x + j >= 0 and y + j < self.height and x + j < self.width:
-                                if self.cells[x + j][y + j]["player"] == "USER":
-                                    break
-                                elif self.cells[x + j][y + j]["player"] == "CPU":
-                                    self.move_cells[y + j][x + j] = True
-                                    break
-                                elif not (y + j == y and x + j == x) and not self.cells[x + j][y + j]["player"] == "USER":
-                                    self.move_cells[y + j][x + j] = True
-                            elif i == 4 and not j == 0 and (y - j) >= 0 and (y - j) < self.height:
-                                if self.cells[x][y - j]["player"] == "USER":
-                                    break
-                                elif self.cells[x][y - j]["player"] == "CPU":
-                                    self.move_cells[y - j][x] = True
-                                    break
-                                elif not (y - j == y) and not self.cells[x][y - j]["player"] == "USER":
-                                    self.move_cells[y - j][x] = True
-                            elif i == 5 and not j == 0 and (y + j) >= 0 and (y + j) < self.height:
-                                if self.cells[x][y + j]["player"] == "USER":
-                                    break
-                                elif self.cells[x][y + j]["player"] == "CPU":
-                                    self.move_cells[y + j][x] = True
-                                    break
-                                elif not (y + j == y) and not self.cells[x][y + j]["player"] == "USER":
-                                    self.move_cells[y + j][x] = True
-                            elif i == 6 and not j == 0 and (x - j) >= 0 and (x - j) < self.width:
-                                if self.cells[x - j][y]["player"] == "USER":
-                                    break
-                                elif self.cells[x - j][y]["player"] == "CPU":
-                                    self.move_cells[y][x - j] = True
-                                    break
-                                elif not (x - j == x) and not self.cells[x - j][y]["player"] == "USER":
-                                    self.move_cells[y][x - j] = True
-                            elif i == 7 and not j == 0 and (x + j) >= 0 and (x + j) < self.width:
-                                if self.cells[x + j][y]["player"] == "USER":
-                                    break
-                                elif self.cells[x + j][y]["player"] == "CPU":
-                                    self.move_cells[y][x + j] = True
-                                    break
-                                elif not (x + j == x) and not self.cells[x + j][y]["player"] == "USER":
-                                    self.move_cells[y][x + j] = True
-                            else:
-                                continue
+                self.is_queen_move(player, x, y)
 
             for i in range(self.height):
                 for j in range(self.width):
@@ -601,16 +450,9 @@ class Chess():
                 "x": x
             }
 
-            # if self.save_cell["y"] == y and self.save_cell["x"] == x:
-            #     label = self.labels[j][i]
-            #     label.config(
-            #         bg="white"
-            #     )
             self.test_cells()
             self.test_move_cells()
             self.test_player_cells()
-
-
 
     def move(self, name, y, x):
 
@@ -620,53 +462,25 @@ class Chess():
         player = self.cells[self.save_cell["x"]][self.save_cell["y"]]["player"]
 
         if name == "PAWN":
-            if player == "CPU":
-                if self.is_game_end(piece_name, player, x, y):
-                    self.game_end()
-                else:
-                    self.pawn_move(player, y, x)
-
-            elif player == "USER":
-                if self.is_game_end(piece_name, player, x, y):
-                    self.game_end()
-                else:
-                    self.pawn_move(player, y, x)
+            if self.is_game_end(piece_name, player, x, y):
+                self.game_end()
+            else:
+                self.pawn_move(player, y, x)
 
         elif name == "ROOK":
-            if player == "CPU":
-                self.rook_move(player, y, x)
-
-            elif player == "USER":
-                self.rook_move(player, y, x)
+            self.rook_move(player, y, x)
 
         elif name == "KNIGHT":
-            if player == "CPU":
-                self.knight_move(player, y, x)
-
-            elif player == "USER":
-                self.knight_move(player, y, x)
+            self.knight_move(player, y, x)
 
         elif name == "BISHOP":
-            if player == "CPU":
-                self.bishop_move(player, y, x)
-
-            elif player == "USER":
-                self.bishop_move(player, y, x)
+            self.bishop_move(player, y, x)
 
         elif name == "KING":
-            if player == "CPU":
-                self.king_move(player, y, x)
-
-            elif player == "USER":
-                self.king_move(player, y, x)
+            self.king_move(player, y, x)
 
         elif name == "QUEEN":
-            if player == "CPU":
-                self.queen_move(player, y, x)
-
-            elif player == "USER":
-                self.queen_move(player, y, x)
-
+            self.queen_move(player, y, x)
 
         self.init_move_cells()
 
@@ -766,7 +580,6 @@ class Chess():
         self.labels[x][y].config(
             text="QUEEN"
         )
-
 
     def cant_move_alert(self):
         messagebox.showinfo(
