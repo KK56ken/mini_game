@@ -45,9 +45,9 @@ class Chess():
         self.placement_piece()
 
         # ↓GUIの作成
-        self.create_widgets()
+        # self.create_widgets()
 
-        self.set_events()
+        # self.set_events()
         # debug呼び出し
         # cellsの中身の確認
         self.test_cells()
@@ -65,6 +65,12 @@ class Chess():
     def init_move_cells(self):
         self.move_cells = [[bool() for i in range(self.width)]
                            for j in range(self.height)]
+
+    def changePage(self, page):
+        '''
+        画面遷移用の関数
+        '''
+        page.tkraise()
 
     # 先行後攻選択
     def select_turn(self):
